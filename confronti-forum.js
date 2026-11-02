@@ -19,6 +19,35 @@
     "example-bar":[{id:"seed-c4",role:"bar",body:"Esempio di risposta: un riepilogo ad alta voce delle comande cambiate evita di rifare tutto da capo.",parentId:null,example:true}],
     "example-lavoro":[{id:"seed-c5",role:"sala",body:"Esempio di risposta: io distinguerei le emergenze vere dalle richieste frequenti e chiederei un'organizzazione dei turni più prevedibile.",parentId:null,example:true}]
   };
+
+  // Local privacy precautions, NOT an anonymity guarantee or online moderation.
+  function privacyRisks(text){
+    const source=String(text||"");
+    const warnings=[];
+    const patterns=[
+      ["email",/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,"indirizzi email"],
+      ["phone",/(?:\+39|0039)?[\s.-]*(?:3[\s.-]*\d(?:[\s.-]*\d){8}|(?:0\d{1,4}[\s.-]*)?\d{2,4}[\s.-]*\d{4,7})\b/,"numeri di telefono"],
+      ["url",/(?:https?:\/\/|www\.)[^\s<>]+/i,"link a siti esterni"],
+      ["handle",/(?:^|[\s(])@[A-Za-z0-9_.]{3,30}\b/,"nomi utente social"],
+      ["address",/\b(?:via|viale|piazza|corso|vicolo|strada|largo)\s+[\p{L}\p{N}][\p{L}\p{N}\s'.,-]{1,70}\b/iu,"indirizzi o vie"]
+    ];
+    for(const [key,regex,label] of patterns)if(regex.test(source))warnings.push({key,label});
+    if(/\b(?:[Rr]istorante|[Tt]rattoria|[Oo]steria|[Pp]izzeria|[Hh]otel|[Bb]ar|[Bb]istrot)\s+(?:[Dd]a|[Dd]i|[Dd]el|[Dd]ella|[Ii]l|[Ll]a)\s+[A-ZÀ-Ý][a-zà-ÿ]{2,}/u.test(source))warnings.push({key:"venue",label:"possibili nomi di locali"});
+    return warnings;
+  }
+  function privacyScanStatus(title,body){
+    const risks=privacyRisks(String(title||"")+"\n"+String(body||""));
+    const soft="Controlla anche nomi propri, date, foto, orari precisi e particolari del turno: un racconto può renderti riconoscibile anche senza dati diretti.";
+    return {risks,summary:risks.length?"Rivedi il testo: potrebbe contenere "+risks.map(x=>x.label).join(", ")+". "+soft:"Nessun contatto, indirizzo o riferimento evidente rilevato. "+soft};
+  }
+  function previewPrivacy(){
+    const title=document.getElementById("forumComposeTitle")?.value||"";
+    const body=document.getElementById("forumComposeBody")?.value||"";
+    const status=document.getElementById("forumPrivacyResults");
+    const result=privacyScanStatus(title,body);
+    if(status){status.textContent=result.summary;status.classList.toggle("forum-privacy-warn",result.risks.length>0);status.hidden=false;}
+    return result;
+  }
   const safe=(s)=>String(s??"");
   function ensure(saved){
     if(!Array.isArray(saved.forumThreads))saved.forumThreads=[];
@@ -27,6 +56,7 @@
     if(!saved.forumCommentVotes||typeof saved.forumCommentVotes!=="object"||Array.isArray(saved.forumCommentVotes))saved.forumCommentVotes={};
     if(!Array.isArray(saved.forumBookmarks))saved.forumBookmarks=[];
     if(!Array.isArray(saved.forumHidden))saved.forumHidden=[];
+    if(!Array.isArray(saved.forumReports))saved.forumReports=[];
   }
   function age(s){
     if(!s)return "Esempio";
@@ -90,7 +120,7 @@
     <section class="forum-side-panel card"><span class="card-label">UNO SPAZIO PER CHI LAVORA</span><h3>Qui non devi avere tutte le risposte.</h3><p>Racconta un episodio, ascolta un altro punto di vista e trova consigli da colleghi di sala, cucina e bar.</p>
       <div class="forum-side-stat">${ico("message",19)} Discussioni e risposte</div><div class="forum-side-stat">${ico("shield",19)} Identità non mostrata nei post</div><div class="forum-side-stat">${ico("heart",19)} Rispetto prima dei voti</div>
     </section>
-    <section class="forum-side-panel card"><span class="card-label">PRIMA DI SCRIVERE</span><h3>Proteggi te e gli altri.</h3><p>Non citare nomi di colleghi, clienti o locali. Evita indirizzi, turni precisi e dettagli che rendono riconoscibili le persone.</p><p class="micro">La privacy del racconto dipende anche dalle informazioni che scegli di inserire.</p></section>
+    <section class="forum-side-panel card"><span class="card-label">PRIMA DI SCRIVERE</span><h3>Proteggi te e gli altri.</h3><p>Non citare nomi di colleghi, clienti o locali. Evita indirizzi, turni precisi e dettagli che rendono riconoscibili le persone.</p><p class="micro">La privacy del racconto dipende anche dalle informazioni che scegli di inserire.</p><button class="forum-clear-link" data-action="forumErase">Cancella i miei dati di Confronti</button></section>
   </aside>`;}
   function render(ctx){
     ensure(ctx.saved);
@@ -130,6 +160,7 @@
         <div class="forum-comment-actions">
           <button data-action="forumCommentVote" data-id="${esc(threadId)}" data-comment-id="${esc(c.id)}" aria-pressed="${liked}" class="${liked?"is-active":""}">${ico("arrow",15)} ${liked?"1":"0"} utile</button>
           <button data-action="forumReply" data-id="${esc(threadId)}" data-comment-id="${esc(child&&c.parentId?c.parentId:c.id)}">${ico("message",15)} Rispondi</button>
+          ${!c.owned?`<button data-action="forumReport" data-id="${esc(threadId)}" data-comment-id="${esc(c.id)}">Segnala (demo)</button>`:""}
           ${c.owned?`<button data-action="forumDeleteComment" data-id="${esc(threadId)}" data-comment-id="${esc(c.id)}">Elimina</button>`:""}
         </div>
       </div>
@@ -152,6 +183,7 @@
           <button class="forum-vote ${voted?"is-active":""}" data-action="forumVote" data-id="${esc(t.id)}" aria-pressed="${voted}">${ico("arrow",16)} ${voted?1:0} utile</button>
           <span class="forum-foot-stat">${ico("message",17)} ${list.length} commenti</span>
           <button data-action="forumBookmark" data-id="${esc(t.id)}" aria-pressed="${bookmarked}">${ico("book",16)} ${bookmarked?"Salvato":"Salva"}</button>
+          ${!t.owned?`<button data-action="forumReport" data-id="${esc(t.id)}">Segnala (demo)</button>`:""}
           ${t.owned?`<button data-action="forumEdit" data-id="${esc(t.id)}">${ico("edit",16)} Modifica</button><button data-action="forumDelete" data-id="${esc(t.id)}">Elimina</button>`:""}
         </div>
       </article>
@@ -173,6 +205,13 @@
   }
   function modal(ctx){
     const {state,saved,esc,ico}=ctx;
+    if(state.modal==="forumReport"){
+      return '<div class="modal-overlay" role="presentation"><section class="modal forum-compose-modal" role="dialog" aria-modal="true" aria-labelledby="forumReportTitle">'
+      +'<div class="forum-compose-head"><div><span class="card-label">MODERAZIONE / DIMOSTRAZIONE</span><h2 id="forumReportTitle">Segnala un contenuto</h2><p>Le segnalazioni NON vengono inviate a moderatori: questa è una prova locale.</p></div><button class="btn ghost small" data-action="forumClose" aria-label="Chiudi">Chiudi</button></div>'
+      +'<label class="forum-field" for="forumReportReason">Perché vuoi segnalarlo?<select id="forumReportReason" class="search-input"><option value="privacy">Dati personali o identità riconoscibile</option><option value="harassment">Insulti, molestie o discriminazione</option><option value="threats">Minacce o incitamento alla violenza</option><option value="spam">Spam, pubblicità o truffa</option><option value="other">Altro contenuto inappropriato</option></select></label>'
+      +'<div class="forum-local-note">Questa segnalazione sarà registrata soltanto nel browser. Nessuno la esaminerà finché non esisterà un servizio di moderazione reale.</div>'
+      +'<div class="forum-compose-foot"><span>La segnalazione rimane su questo dispositivo.</span><div><button class="btn outline" data-action="forumClose">Annulla</button><button class="btn" data-action="forumSaveReport">Salva segnalazione nella demo</button></div></div></section></div>';
+    }
     if(state.modal!=="forumCompose")return "";
     const t=state.forumEditing?saved.forumThreads.find(x=>x.id===state.forumEditing):null;
     return `<div class="modal-overlay" role="presentation"><section class="modal forum-compose-modal" role="dialog" aria-modal="true" aria-labelledby="forumModalTitle">
@@ -194,6 +233,7 @@
       <label class="forum-field" for="forumComposeBody">Che cosa è successo? <span class="forum-hint">(30-2500 caratteri)</span>
        <textarea id="forumComposeBody" rows="8" maxlength="2500" placeholder="Descrivi l'episodio, come hai reagito e che tipo di consiglio vorresti ricevere.">${esc(t?.body||"")}</textarea>
       </label>
+      <div class="forum-privacy-check"><button type="button" class="btn outline small" data-action="forumCheckPrivacy">Controlla il testo</button><p id="forumPrivacyResults" role="status" hidden></p></div>
       <label class="forum-privacy"><input type="checkbox" id="forumComposePrivacy"> Ho tolto nomi di persone, locali, indirizzi e dettagli che potrebbero identificare qualcuno.</label>
       <div class="forum-compose-foot"><span>Anteprima: resterà visibile solo nel tuo browser, non online.</span><div><button class="btn outline" data-action="forumClose">Annulla</button><button class="btn" data-action="forumPublish">${t?"Salva":"Pubblica nella demo"}</button></div></div>
     </section></div>`;
@@ -210,7 +250,34 @@
     const rerender=()=>{render();};
     switch(name){
       case "forumCompose":state.modal="forumCompose";state.forumEditing=null;rerender();requestAnimationFrame(()=>document.getElementById("forumComposeTitle")?.focus());break;
-      case "forumClose":state.modal=null;state.forumEditing=null;rerender();break;
+      case "forumClose":state.modal=null;state.forumEditing=null;state.forumReportThread=null;state.forumReportComment=null;rerender();break;
+      case "forumCheckPrivacy":previewPrivacy();break;
+      case "forumReport":{
+        if(!items(saved).some(x=>x.id===id))return;
+        state.forumReportThread=id;state.forumReportComment=commentId||null;state.modal="forumReport";rerender();break;
+      }
+      case "forumSaveReport":{
+        const reason=document.getElementById("forumReportReason")?.value;
+        if(!["privacy","harassment","threats","spam","other"].includes(reason))return;
+        const threadId=state.forumReportThread,childId=state.forumReportComment;
+        if(!items(saved).some(x=>x.id===threadId))return;
+        if(childId&&!commentsFor(saved,threadId).some(x=>x.id===childId))return;
+        if(saved.forumReports.length>=50){toast("Limite segnalazioni demo raggiunto.");return;}
+        saved.forumReports.push({threadId,commentId:childId||null,reason,createdAt:new Date().toISOString()});
+        if(!save()){saved.forumReports.pop();toast("Impossibile salvare la segnalazione nel browser.");return;}
+        state.modal=null;state.forumReportThread=null;state.forumReportComment=null;
+        toast("Segnalazione salvata SOLO nel browser. Non è stata inviata ad alcun moderatore.");
+        rerender();break;
+      }
+      case "forumErase":{
+        if(!confirm("Cancellare definitivamente post, commenti, voti, segnalazioni e preferenze di Confronti salvati in questo browser? Gli altri dati di Academy rimarranno."))return;
+        const keys=["forumThreads","forumComments","forumVotes","forumCommentVotes","forumBookmarks","forumHidden","forumReports"];
+        const previous=Object.fromEntries(keys.map(k=>[k,saved[k]]));
+        for(const k of keys)delete saved[k];
+        ensure(saved);
+        if(!save()){Object.assign(saved,previous);toast("Cancellazione non riuscita: controlla l'archiviazione del browser.");break;}
+        state.forumOpened=null;state.forumReplyTo=null;state.modal=null;rerender();toast("Dati di Confronti cancellati dal browser. Gli eventuali backup esportati rimangono separati.");break;
+      }
       case "forumFilter":state.forumFilter=id||"tutti";rerender();break;
       case "forumOpen":
         if(state.page!=="confronti"){setPage("confronti",{forumOpened:id});}
@@ -232,6 +299,7 @@
         const title=document.getElementById("forumComposeTitle")?.value.trim(),body=document.getElementById("forumComposeBody")?.value.trim();
         if(!ROLE_LABELS[role]||!CATEGORY_LABELS[category]||!TOPIC_LABELS[topic]){toast("Completa i campi del racconto.");break;}
         if(!title||title.length<10||title.length>110||!body||body.length<30||body.length>2500){toast("Titolo: 10-110 caratteri. Racconto: 30-2500 caratteri.");break;}
+        const assessment=previewPrivacy();if(assessment.risks.length){toast("Rimuovi i dati potenzialmente identificativi prima di salvare.");break;}
         if(!document.getElementById("forumComposePrivacy")?.checked){toast("Conferma prima di aver tolto le informazioni identificative.");break;}
         if(saved.forumThreads.length>=100&&!state.forumEditing){toast("Limite di episodi locali raggiunto.");break;}
         const prev=JSON.stringify(saved.forumThreads),editing=state.forumEditing;
@@ -249,6 +317,7 @@
         const body=document.getElementById("forumReplyBody")?.value.trim(),role=document.getElementById("forumReplyRole")?.value;
         if(!body||body.length<4||body.length>1000){toast("Il commento deve avere da 4 a 1000 caratteri.");break;}
         if(!ROLE_LABELS[role]){toast("Seleziona il tuo ruolo.");break;}
+        if(privacyScanStatus("",body).risks.length){toast("Rimuovi contatti, indirizzi o riferimenti ai locali dal commento.");break;}
         const parent=state.forumReplyTo;
         const existing=commentsFor(saved,id);
         if(parent&&!existing.some(c=>c.id===parent)){toast("Il commento a cui vuoi rispondere non è più disponibile.");break;}
@@ -270,5 +339,5 @@
       default:break;
     }
   }
-  window.DopoTurnoForum={render,modal,highlights,action,ensure,exampleIds:EXAMPLES.map(x=>x.id)};
+  window.DopoTurnoForum={render,modal,highlights,action,ensure,privacyRisks,privacyScanStatus,exampleIds:EXAMPLES.map(x=>x.id)};
 })();

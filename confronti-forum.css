@@ -132,3 +132,12 @@
 }
 @media(max-width:390px){.forum-thread-head{gap:7px}.forum-avatar{width:33px;height:33px}.forum-author strong{font-size:11.5px}.forum-example{font-size:8px}.forum-thread-foot button{font-size:10px}.forum-detail-post h1{font-size:25px}}
 @media(prefers-reduced-motion:reduce){.forum-thread-title{scroll-behavior:auto}}
+
+/* Privacy tools and local-only reporting, v1.9 */
+.forum-privacy-check{display:grid;gap:10px;padding:14px 15px;margin:16px 0;background:#1b2d41;border:1px solid #48617b;border-radius:11px}
+.forum-privacy-check .btn{justify-self:start}
+.forum-privacy-check p{color:#c8deef;font-size:12.5px;line-height:1.65;margin:0}
+.forum-privacy-check p.forum-privacy-warn{color:#ffccb1;background:#44342e;border-left:3px solid #ffaf84;padding:11px;border-radius:7px}
+.forum-clear-link{border:1px solid #53657c;padding:10px 13px;background:#263648;color:#ffc4a3;border-radius:8px;font-size:11px;font-weight:800;line-height:1.35;text-align:left;margin-top:12px}
+.forum-clear-link:hover{background:#354b62;color:#fff}
+.forum-privacy-check [hidden]{display:none}
