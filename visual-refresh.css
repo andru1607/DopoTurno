@@ -283,3 +283,229 @@ input::placeholder,textarea::placeholder,.search-input::placeholder{color:#afbed
   .cv-print{border:0!important}
   .cv-print .divider{background:#b7bfca!important}
 }
+
+/* DopoTurno v1.6 — Dark Social palette, inspired by the user's reference screenshot.
+   Charcoal canvas, warm white typography and restrained coral/magenta/amber accents.
+   All visual changes are CSS-only: the existing Academy, exams and data are preserved. */
+:root {
+  color-scheme: dark;
+  --forest:#C42A73;
+  --forest-deep:#0C0F14;
+  --forest-2:#AB205F;
+  --forest-light:#27202D;
+  --paper:#0C0F14;
+  --paper-2:#11151C;
+  --white:#181C25;
+  --ink:#F6F7FA;
+  --muted:#A9AEB9;
+  --line:#2B303A;
+  --orange:#FFB240;
+  --orange-pale:#38271F;
+  --red:#EF7090;
+  --red-bg:#3D2430;
+  --shadow:0 14px 42px rgba(0,0,0,.18);
+  --shadow-hover:0 20px 60px rgba(0,0,0,.35);
+  --dt-surface:#181C25;
+  --dt-surface-2:#202530;
+  --dt-surface-3:#282D38;
+  --dt-rose:#C42A73;
+  --dt-rose-light:#FF82B2;
+  --dt-gold:#FFB240;
+  --dt-text:#F6F7FA;
+  --dt-subtext:#A9AEB9;
+  --dt-ring:linear-gradient(145deg,#E743A1 5%,#FF4D68 54%,#FFB240 99%);
+}
+html {background:#0C0F14;color-scheme:dark}
+body {background:#0C0F14;color:var(--dt-text)}
+::selection{background:#923360;color:white}
+button,input,select,textarea{color-scheme:dark}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline-color:#FFB240}
+.skip-link{background:#282D38;color:#fff}
+
+/* App chrome */
+.sidebar{background:#0A0C11;color:#E8E9EE;border-right:1px solid #242832}
+.wordmark-label small,.nav-label,.nav-link .mini-label,.sidebar-user small,.beta{color:#9AA2AE}
+.mark{background:var(--dt-ring);color:#0C0F14;box-shadow:0 4px 16px #E743A126}
+.nav-link{color:#BEC4CF}
+.nav-link:hover{background:#1C2029;color:#fff}
+.nav-link.active{background:#26222F;color:#fff;box-shadow:none}
+.nav-link.active:before{background:linear-gradient(#F04AA1,#FFB240)}
+.sidebar-bottom{border-top-color:#292D37}
+.avatar{background:#393344;color:#FFDEEF}
+.avatar.orange{background:#3B2B28;color:#FFD19A}
+.sidebar-user b{color:#fff}
+.topbar{background:rgba(12,15,20,.96);border-bottom-color:#2A2E37}
+.top-caption,.tiny-caption,.page-header p,.section-head p{color:var(--dt-subtext)}
+.eyebrow,.card-label,.community-topic{color:#FFB96A}
+.search-inline,.top-icon{background:#1C2029;border-color:#323642;color:#D0D4DE}
+.top-icon:hover{background:#272B36}
+.text-link,.resource-links a,.breadcrumb button{color:#FF9AC4}
+.footer{color:#8D93A0}
+
+/* Surfaces */
+.card,.info-item,.module-card,.reading,.exam-card,.person,.cv-card,.modal{background:var(--dt-surface);border-color:var(--line);color:var(--dt-text)}
+.card.accent{background:linear-gradient(135deg,#27202D,#211E27)}
+.card p,.social-post p,.review-item p,.reading p,.reading ul,.reading ol,.lesson-intro,.case-heading p{color:#D4D7DF}
+.info-item span,.micro,.lesson-row small,.module-header span,.social-head small,.course-foot,.cv-stat small,.person small,.job-card p{color:#A9AEB9}
+.divider{background:#2C303B}
+.pill-icon,.chip,.lesson-index.done{background:#2D2332;color:#FF9AC4}
+.chip.orange{background:#3B2928;color:#FFC286}
+.chip.neutral{background:#292D37;color:#CAD0DA}
+.chip.outline{border-color:#454956}
+.chip.light{background:#FFFFFF18;color:#fff;border-color:#FFFFFF25}
+.btn{background:#C42A73;color:#fff}
+.btn:hover:not(:disabled){background:#AD1F62}
+.btn.outline{background:#222631;color:#F6F7FA;border-color:#4A4D5B}
+.btn.outline:hover{background:#31303D}
+.btn.ghost{color:#FF9AC4}
+.btn.peach,.hero-main .btn{background:linear-gradient(115deg,#FFB240 0%,#FF8A53 70%,#F76591 130%);color:#14151C;font-weight:800}
+.btn.peach:hover,.hero-main .btn:hover{background:linear-gradient(115deg,#FFCB69,#FF985E)}
+
+/* Homepage and Academy */
+.hero-main{background:#12131B;color:#fff;border:1px solid #32303D}
+.hero-main:after{background:linear-gradient(to bottom,transparent 4%,#0C0F14B0 64%,#0C0F14ED 100%)}
+.hero-main p{color:#E0DCE4}
+.hero-main .hero-kicker{color:#FFBF76}
+.info-item{background:#181C25}
+.course-card .overlay-badge{background:#151821E8;color:#F6F7FA;border:1px solid #FFFFFF2C}
+.course-card .arrow-circle{background:var(--dt-ring);color:#151821}
+.progressbar,.exam-progress{background:#30333F}
+.progressbar span{background:linear-gradient(90deg,#E34B9E,#FFB240)}
+.exam-progress span{background:linear-gradient(90deg,#C42A73,#FFB240)}
+.module-header,.lesson-row{background:#181C25;color:#F6F7FA}
+.module-header:hover,.lesson-row:hover{background:#242833}
+.module-number{background:#2B2833;color:#F4BA91}
+.lesson-row{border-top-color:#30343D}
+.lesson-index{background:#2A2E37;color:#B9BECA}
+.lesson-row .right{color:#A5ADBC}
+.stat-circle{background:conic-gradient(#C42A73 var(--progress),#343744 0)}
+.stat-circle:after{background:#181C25}
+.feature-list svg{color:#FFB240}
+.course-placeholder{background:linear-gradient(135deg,#262330,#29262B);color:#F6C7DC}
+.course-placeholder:before,.course-placeholder:after{border-color:#604353}
+
+/* Course reading and exercises */
+.reading .callout,.glossary{background:#242630;border-color:#49404A;color:#E5E5EC}
+.reading .callout.orange{background:#3A2928;border-color:#B96653}
+.glossary p,.glossary li{color:#DEE0E5}
+.tab{color:#B0B6C3}
+.tab[aria-selected="true"]{background:#302334;color:#FF9EC3}
+.quiz-option{background:#202530;color:#F2F3F7;border-color:#414652}
+.quiz-option:hover{border-color:#B9548B}
+.quiz-option.selected{background:#342332;border:1.5px solid #E35A9D}
+.quiz-option input,.self-choice input{accent-color:#E2549C}
+.feedback-box{background:#1B322C;border-color:#356453;color:#A5F3D4}
+.feedback-box.warn{background:#3F2B24;border-color:#8E5942;color:#FFC7A1}
+.assessment-cover .left,.results-hero{background:linear-gradient(145deg,#241624,#161A24);color:#fff;border:1px solid #5A2E4B}
+.assessment-cover p,.results-hero p,.assessment-cover .left .feature-list div{color:#E7DCE4}
+.exam-card{background:#181C25}
+.exam-card .q-id,.assessment-mode .q-id{color:#FFBC85}
+.visual-board{background:#20242F;border-color:#3B404C}
+.visual-dot{background:#C42A73;color:#fff;border-color:#fff}
+.visual-dot.correct{background:#137E59}
+.visual-dot.missed{background:#C42A73}
+.visual-dot.wrong{background:#A76D35}
+.review-item p{color:#D9DCE3}
+.case-photo{background:#24242C;border-color:#3C3C48}
+.case-photo figcaption{background:#232630;color:#D0D3DC}
+
+/* Forms, CV and overlays */
+.search-input,.modal textarea,.cv-label textarea,.lesson-notes textarea,.comment-input,.post-field textarea{background:#10141B;color:#F6F7FA;border:1px solid #3E4452}
+.search-input::placeholder,textarea::placeholder,input::placeholder{color:#87909F}
+.search-input:focus,.modal textarea:focus,.lesson-notes textarea:focus{border-color:#E2549C}
+.modal-overlay{background:#03050AD9}
+.modal{box-shadow:0 28px 100px #0009}
+.modal-photo-head p{color:#A9AEB9}
+.modal-photo img{background:#202530}
+.reader-toolbar{background:#1A1E26;border-color:#353A46}
+.reader-label,.lesson-notes-head p,.notes-status,.quiet-logo small,.quiet-security{color:#B1B7C2}
+.reader-size,.reader-tool{background:#252934;color:#ECEEF4;border-color:#404653}
+.reader-size.chosen{background:#C42A73;border-color:#C42A73;color:#fff}
+.reader-tool:hover,.reader-size:hover{background:#33323F}
+.lesson-notes{background:#191D25;border-color:#363B48}
+.lesson-notes-head svg{color:#FF9AC4}
+.quiet-header{background:#0E1117;border-bottom:1px solid #303440}
+.quiet-logo{color:#fff}
+.quiet-monogram{background:var(--dt-ring);color:#17141A}
+.assessment-mode .exam-card{border-color:#3D404B}
+.visual-cursor:before,.visual-cursor:after{background:#FFB240}
+.self-assessment p{color:#D1CCD6!important}
+.draft-banner{background:#211C27;border-color:#504050;border-left-color:#F171A5}
+.draft-banner p{color:#C7C3CF}
+.accessible-option{background:#202530;border-color:#444955;color:#F6F7FA}
+.accessible-option .self-choice{background:#292B36;color:#F6F7FA}
+.accessible-option .self-choice span,.assessment-cover .accessible-option .self-choice span{color:#F6F7FA!important}
+.career-tab{background:#20242E;color:#D5D9E3;border-color:#414655}
+.career-tab.active{background:#C42A73;color:#fff;border-color:#C42A73}
+.job-meta span{background:#282A34;color:#E6CDDB}
+.career-note{background:#30262A;border-left-color:#FFB240;color:#E5D5DB}
+.cv-print{background:#1A1D26;border-color:#414552}
+.cv-print .cv-kicker{color:#FFB27E}
+.cv-role{color:#D4BBC9}
+
+/* Social feed and Confronti */
+.community-disclaimer{background:#1C2029;border-color:#3D414B}
+.feed-filter{background:#1D222B;border-color:#3B414E;color:#E5E7ED}
+.feed-filter:hover,.feed-filter:focus-visible{border-color:#E86DAA}
+.feed-filter.active{background:#C42A73;color:white;border-color:#C42A73}
+.social-post .post-body{color:#E0E1E8}
+.social-actions{color:#B1B7C2}
+.social-actions button[aria-pressed="true"]{color:#FF9AC4}
+.comment-box{border-top-color:#363B47}
+.comment{background:#262A34}
+.comment p{color:#D7D9E1}
+.post-field{color:#F2EDF2}
+.comparison-summary>div{background:#222631;border-color:#404450;color:#E4E6EC}
+.comparison-summary b{background:#C42A73;color:white}
+.comparison-option{border-color:#3A3E48}
+.comparison-option.chosen{border:2px solid #F17FB3;background:#31212F}
+.comparison-option .btn[aria-pressed="true"]{background:#C42A73;color:#fff}
+
+/* Notices and account controls */
+.alert,.fake-notice{background:#352822;color:#FFD1AD;border-color:#74523A}
+.dialogue{background:#252A33;color:#E5E7ED}
+.breadcrumb{color:#A7AFBC}
+.toggle{background:#545966}
+.toggle:checked{background:#C42A73}
+.toast{background:#262230;color:#fff;border:1px solid #4B3346}
+
+/* iPhone bottom chrome; darker than the canvas for clear navigation */
+.bottom-nav{background:rgba(12,15,20,.97);border-top:1px solid #30333C;box-shadow:0 -9px 35px #0008;backdrop-filter:blur(22px)}
+.bottom-nav button{color:#9EA5B1}
+.bottom-nav button.active{color:#FF9DC7}
+.bottom-nav button.active svg{filter:drop-shadow(0 0 5px #EF65A254)}
+
+/* Accent used only as an identity cue, analogous to the reference's story rings */
+.wordmark-label strong::after{content:' ';display:inline-block;width:6px;height:6px;margin-left:4px;vertical-align:baseline;border-radius:50%;background:var(--dt-ring)}
+.stat-circle{filter:drop-shadow(0 0 7px #D83B8030)}
+
+@media(max-width:700px){
+  .topbar{background:rgba(12,15,20,.96)}
+  .mobile-top-brand{color:#fff}
+  .hero-main{border-radius:17px}
+  .card,.reading,.exam-card{box-shadow:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .btn,.course-card,.photo-test-card img{transition:none!important}
+}
+@media print{
+  html,body{color-scheme:light!important}
+  .cv-print,.cv-print *{color:#17201E!important;background:#fff!important;border-color:#E1E4E0!important}
+  .cv-print .cv-kicker{color:#4B594F!important}
+}
+
+
+.codex-feature{background:linear-gradient(150deg,#28212A,#1A1D25);border-color:#563443}
+.codex-feature .pill-icon{background:#382632;color:#FFB240}
+
+
+/* Align the v1.7 semantic UI tokens with the requested near-black palette */
+:root{--page:#0C0F14;--surface:#181C25;--surface-2:#202530;--surface-soft:#11151C;--border-strong:#454A59;--text:#F6F7FA;--text-secondary:#D4D7DF;--text-muted:#A9AEB9;--accent:#FFB240;--accent-hover:#FFCA75;--accent-text:#14151C;--focus:#FFB240}
+.main-frame{background:#0C0F14}
+.module-header strong{color:#F4F5FA}
+.module-header[aria-expanded="true"]{background:#25232E}
+.module-header[aria-expanded="true"] .module-number{background:#3C2837;color:#FFD1E3}
+.social-post h3,.reading h2,.reading h3,.card h3,.job-card h3,.comparison-detail h2,.comparison-card h3{color:#F6F7FA}
+.card.sidebar-card[style*="margin-top:17px"]{background:linear-gradient(150deg,#28212A,#1A1D25)!important;border-color:#563443}
+.lesson-row[style*="#fafbf8"]{background:#252934!important}
+div[style*="#f6f5ee"]{background:#252934!important}
