@@ -4,6 +4,12 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.0 · Posizionamento guidato dopo lo Skill Check
+
+Lo Skill Check ora genera un percorso personalizzato e privato per Sala, Cucina e Bar. Ogni modulo è valutato separatamente: chi dimostra di conoscere già le basi può accedere direttamente alle verifiche applicative, mentre gli errori critici (per esempio sugli allergeni) indirizzano alle lezioni specifiche. Tutti i corsi restano liberamente consultabili e nessuna lezione viene marcata come studiata dal test.
+
+Il motore e le soglie sono **dimostrativi**, non attribuiscono livelli avanzati, certificazioni o competenze pratiche. Il test non mostra suggerimenti o correzioni fino alla consegna. Dettagli: [Percorso personalizzato](docs/LEARNING_PLACEMENT.md); prove: `node --test tests/placement-smoke.cjs`.
+
 ## v1.5 · Academy
 
 | Corso | Lezioni | Moduli | Esercizi nel database | Skill Check | Verifica finale |
