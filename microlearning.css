@@ -1,0 +1,110 @@
+
+/* DopoTurno Academy 2.2 · microlearning, professional mobile-first style */
+.micro-wrap{color:#eaf2f8;max-width:1180px;margin:0 auto;padding-bottom:36px}
+.micro-wrap *{box-sizing:border-box}
+.micro-wrap button{cursor:pointer}
+.micro-wrap button:focus-visible,.micro-wrap textarea:focus-visible{outline:3px solid #8dc6fa;outline-offset:3px}
+.micro-back{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:5px 0 19px}
+.micro-back button{display:inline-flex;align-items:center;gap:7px;background:none;border:0;color:#4e7293;font-size:12px;font-weight:800;padding:9px 5px}
+.micro-back button:hover{color:#234a70}
+.micro-course-hero,.micro-review-hero{background:linear-gradient(122deg,#192b3d,#263d52 70%,#20303e);border:1px solid #47627b;border-radius:21px;padding:clamp(19px,3.5vw,35px);box-shadow:0 14px 35px rgba(12,22,39,.12)}
+.micro-eyebrow{font-weight:850;font-size:11px;letter-spacing:.11em;color:#ffc99c;text-transform:uppercase;margin-bottom:10px}
+.micro-course-hero h1,.micro-review-hero h1{font-size:clamp(25px,4.5vw,40px);line-height:1.18;color:#fff;margin:0 0 12px;max-width:850px;letter-spacing:-.02em}
+.micro-course-hero p,.micro-review-hero p{color:#d0e0ed;font-size:14px;line-height:1.65;max-width:720px;margin:0 0 15px}
+.micro-hero-meta{display:flex;gap:8px 19px;flex-wrap:wrap;font-size:12px;color:#d5e3ef;margin:17px 0 11px}
+.micro-hero-meta strong{color:#fff}
+.micro-progress-track,.micro-mini-bar{height:8px;border-radius:100px;background:#3c556b;overflow:hidden}
+.micro-progress-track>span,.micro-mini-bar>span{display:block;background:#a4d8c0;height:100%;border-radius:inherit}
+.micro-hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin:22px 0 13px}
+.micro-hero-actions .btn{min-height:42px}
+.micro-caption{font-size:11.5px!important;color:#c7d5e3!important;line-height:1.6!important;margin:9px 0 0!important}
+.micro-guidance{border:1px solid #eac29c;background:#fff6e9;color:#614328;border-radius:10px;padding:12px 15px;margin:18px 0;font-size:12.5px;line-height:1.6}
+.micro-module{margin:27px 0;border-radius:16px;border:1px solid #405b71;background:#1a2b3e;overflow:hidden}
+.micro-module-head{display:flex;gap:13px;align-items:flex-start;padding:19px 20px;background:#263e53;border-bottom:1px solid #456077}
+.micro-module-index{display:grid;place-items:center;min-width:35px;height:35px;background:#324c63;border:1px solid #7893aa;color:#fff;border-radius:9px;font-size:13px;font-weight:800}
+.micro-module-head>div{flex:1;min-width:0}
+.micro-module-head h2{font-size:18px;color:#fff;line-height:1.3;margin:0 0 4px}
+.micro-module-head p{font-size:12px;color:#c4d7e7;margin:0;line-height:1.5}
+.micro-module-count{white-space:nowrap;font-size:12px;font-weight:800;color:#a9d8c4;margin-top:7px}
+.micro-chapter-list{padding:10px 14px}
+.micro-chapter{padding:19px 14px;border-bottom:1px solid rgba(216,231,245,.15);display:flex;flex-wrap:wrap;align-items:center;column-gap:20px;row-gap:10px}
+.micro-chapter:last-child{border:0}
+.micro-chapter.recommended{border-left:3px solid #e9bb86;padding-left:11px;background:rgba(244,198,138,.045)}
+.micro-chapter-text{flex:1 1 320px;min-width:0}
+.micro-chapter-label{display:block;color:#d0b18d;letter-spacing:.075em;font-size:10px;font-weight:750;margin-bottom:7px}
+.micro-chapter-text h3{font-size:15.5px;line-height:1.38;color:#fff;margin:0 0 4px}
+.micro-chapter-text p{font-size:12px;line-height:1.55;color:#cad9e7;margin:0}
+.micro-chapter-foot{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:13px}
+.micro-mini-track{display:flex;gap:5px}
+.micro-track-item{width:30px;height:30px;border-radius:8px;color:#cbddea;border:1px solid #5d7690;background:#2a4257;font-size:11px;font-weight:850}
+.micro-track-item.done{background:#2a6658;border-color:#67b594;color:#fff}
+.micro-chapter-progress{flex-basis:100%;color:#b7c9d8;font-size:10.5px;line-height:1.4}
+.micro-footer{font-size:11px;color:#536576;line-height:1.7;margin:25px 0}
+.micro-step-layout{display:grid;grid-template-columns:minmax(0,1fr) 255px;gap:18px;align-items:start}
+.micro-lesson-panel{min-width:0;padding:clamp(17px,3vw,26px);border-radius:17px;background:#1b2d40;border:1px solid #425c73}
+.micro-lesson-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin:0 0 17px}
+.micro-lesson-heading>div{flex:1;min-width:0}
+.micro-lesson-heading h1{color:#fff;font-size:clamp(22px,3.5vw,29px);line-height:1.25;margin:0 0 8px}
+.micro-lesson-heading p{font-size:12.5px;line-height:1.55;color:#cbdbe9;margin:0}
+.micro-time{font-size:11px;background:#304a5d;border:1px solid #587389;color:#c7e0ec;border-radius:100px;padding:7px 12px;white-space:nowrap}
+.micro-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:18px 0 23px}
+.micro-step-chip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-width:0;background:#273e53;border:1px solid #56748b;color:#d1e0ed;border-radius:11px;padding:9px 4px;font-size:10px;font-weight:700;line-height:1.35;text-align:center}
+.micro-step-chip span{display:grid;place-items:center;border-radius:50%;width:23px;height:23px;background:#3d586e;color:#fff;font-size:11px}
+.micro-step-chip.completed span{background:#2c735a;color:#fff}
+.micro-step-chip.current{background:#405b71;border-color:#f1c59c;color:#fff}
+.micro-step-chip.current span{background:#b67d4c}
+.micro-step-kicker{color:#ffcca0;font-size:10.5px;letter-spacing:.11em;font-weight:800;margin-bottom:6px}
+.micro-lesson-content{padding:2px 0}
+.micro-lesson-content h2{font-size:24px;color:#fff;line-height:1.3;margin:0 0 11px}
+.micro-lesson-content .micro-lead{font-size:12.5px;color:#b8cddd;line-height:1.65;margin:0 0 21px}
+.micro-reading{font-size:14px;line-height:1.83;color:#e0eaf3;max-width:75ch}
+.micro-reading h3{font-size:16px;line-height:1.4;color:#fff;margin:24px 0 9px}
+.micro-reading p{margin:0 0 15px;color:#e0eaf3}
+.micro-reading ul,.micro-reading ol{padding-left:23px;margin:7px 0 18px}
+.micro-reading li{padding-left:5px;margin:8px 0}
+.micro-intro{font-size:15px!important;color:#fff!important}
+.micro-prompt,.micro-term,.micro-risk{background:#2a4156;border:1px solid #51708a;padding:15px 17px;border-radius:12px;margin:22px 0}
+.micro-prompt strong,.micro-term strong,.micro-risk strong{display:block;color:#ffe0b5;font-size:13px;margin:0 0 6px}
+.micro-prompt p,.micro-term p{font-size:12.5px;margin:0!important;line-height:1.65}
+.micro-risk{border-color:#b28063;background:#493d3a}
+.micro-risk li{font-size:13px;line-height:1.7}
+.micro-scenario{padding:15px 17px;background:#31495e;border-left:4px solid #d3a677;border-radius:5px 12px 12px 5px;color:#fff!important}
+.micro-response-label{display:block;color:#fff;font-size:13.5px;font-weight:800;margin:18px 0 8px}
+.micro-reading textarea{display:block;width:100%;border-radius:11px;border:1px solid #7f9ab2;background:#122436;color:#fff;padding:15px;min-height:132px;font:inherit;font-size:14px;resize:vertical}
+.micro-reading textarea::placeholder{color:#9bafc1}
+.micro-privacy{font-size:11px!important;color:#c9d9e7!important;line-height:1.55!important;margin:10px 0 0!important}
+.micro-draft-status{font-size:11px!important;color:#b3d9c6!important;margin:6px 0!important}
+.micro-question{border:0;padding:0;margin:20px 0 26px}
+.micro-question legend{color:#fff;font-size:14px;font-weight:750;margin-bottom:12px;line-height:1.55;padding:0}
+.micro-option{width:100%;display:flex;align-items:flex-start;gap:12px;text-align:left;border:1px solid #667e95;background:#273d50;color:#f0f5fa;padding:13px 14px;border-radius:11px;margin-bottom:8px;font:inherit;font-size:13px;line-height:1.55}
+.micro-option.selected{border-color:#f5c292;background:#445164}
+.micro-option.correct{border-color:#80c8ab;background:#21493e}
+.micro-option.wrong{border-color:#f5aa9b;background:#613d3c}
+.micro-option[disabled]{cursor:default}
+.micro-opt-letter{display:grid;place-items:center;flex:none;width:23px;height:23px;border-radius:7px;border:1px solid #8096aa;font-size:11px;font-weight:850}
+.micro-explanation,.micro-result{border:1px solid #5d977f;background:#24463d;padding:13px 15px;border-radius:10px;margin:10px 0}
+.micro-explanation strong,.micro-result strong{color:#eafff6;font-size:12.5px}
+.micro-explanation p,.micro-result p{color:#d6f0e4;font-size:12px;line-height:1.65;margin:4px 0 0}
+.micro-bottom-actions{border-top:1px solid #496176;margin-top:24px;padding-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+.micro-bottom-actions .btn{min-height:42px}
+.micro-aside{position:sticky;top:20px}
+.micro-aside-card{border:1px solid #4d6980;background:#253b50;border-radius:14px;padding:19px}
+.micro-aside-card>strong{display:block;font-size:30px;color:#fff;line-height:1.1;margin:4px 0}
+.micro-aside-card>p{color:#c9dae8;font-size:12px;line-height:1.6}
+.micro-private{border-top:1px solid #536e82;padding-top:14px;color:#edcea8;font-size:11px;line-height:1.6}
+.micro-review-count{display:inline-flex;padding:11px 16px;border-radius:10px;background:#3b566a;color:#fff;font-size:15px;font-weight:800;margin:6px 0 13px}
+.micro-review-list{background:#1b2f41;border:1px solid #526e85;border-radius:14px;padding:clamp(17px,3vw,24px);margin:20px 0}
+.micro-review-list h2{font-size:18px;color:#fff;margin:0 0 16px}
+.micro-review-row{display:flex;align-items:center;gap:15px;justify-content:space-between;padding:14px 0;border-top:1px solid #425b70}
+.micro-review-row strong{font-size:13px;color:#fff}
+.micro-review-row p{font-size:12px;color:#c5d6e4;margin:5px 0 0}
+.micro-no-reviews{padding:17px;border:1px dashed #7895aa;border-radius:10px;color:#cbdbe8;font-size:13px;line-height:1.65}
+.micro-next-due{font-size:12px;color:#d4e4ef;line-height:1.5;margin:10px 0}
+.micro-dashboard{padding:17px 20px;border:1px solid #4e687e;border-radius:13px;background:#233b50;color:#f6fbff;margin:15px 0}
+.micro-dashboard h3{font-size:17px;color:#fff;margin:0 0 6px}
+.micro-dashboard p{font-size:12px;line-height:1.6;color:#d0e1ec;margin:0 0 12px}
+.micro-dashboard .micro-dashboard-actions{display:flex;flex-wrap:wrap;gap:9px}
+.micro-dashboard .btn{min-height:38px}
+@media(max-width:880px){.micro-step-layout{grid-template-columns:1fr}.micro-aside{position:static}.micro-aside-card{display:none}}
+@media(max-width:650px){.micro-wrap{padding-bottom:40px}.micro-course-hero,.micro-review-hero{border-radius:15px;padding:19px}.micro-chapter-list{padding:5px 10px}.micro-chapter{padding:16px 8px}.micro-chapter-foot{width:100%;justify-content:space-between}.micro-chapter-foot .btn{min-width:105px}.micro-track-item{width:30px;height:30px}.micro-module-head{padding:17px 14px}.micro-module-head h2{font-size:16px}.micro-lesson-panel{padding:17px 13px}.micro-step-chip{font-size:9px;padding:9px 3px;gap:5px}.micro-step-chip span{width:21px;height:21px}.micro-tabs{gap:4px}.micro-lesson-content h2{font-size:21px}.micro-bottom-actions{flex-direction:column}.micro-bottom-actions .btn,.micro-hero-actions .btn{width:100%;justify-content:center}.micro-hero-actions{flex-direction:column}.micro-reading{font-size:13.5px}.micro-review-row{flex-wrap:wrap}.micro-review-row .btn{width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.micro-wrap *{transition:none!important;scroll-behavior:auto!important}}

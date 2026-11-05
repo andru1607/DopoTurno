@@ -48,3 +48,7 @@ Stato: **v1.9, prototipo solo locale. Non è una community multiutente e non gar
 ## Verifica di questa fase
 
 `node --test tests/security-smoke.cjs` (Node.js, nessuna dipendenza esterna). I test coprono CSP, assenza di script HTML inline, escaping e controllo privacy di base; **non sostituiscono pentest, audit privacy, test reale su iPhone o test RLS del futuro backend**.
+
+## v2.2: risposte ai casi e ripassi locali
+
+Il sistema conserva anche **microProgress, microReviews, microResponses e microLast** nel browser, ed esporta tali dati nel backup privato. Gli utenti sono invitati a non scrivere nomi di clienti/colleghi o informazioni aziendali sensibili nelle risposte libere. L'importatore valida gli identificativi prima di ripristinare i nuovi dati. Questa misura non equivale alla cifratura dei contenuti nel browser o a un sistema di autenticazione; il dispositivo condiviso resta un rischio.

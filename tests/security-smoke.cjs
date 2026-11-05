@@ -18,11 +18,11 @@ function forum(){
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 test('HTML does not contain inline executable code',()=>{
-  assert.equal((page.match(/<script\b/gi)||[]).length,5);
-  assert.equal((page.match(/<script\b[^>]*\bsrc=/gi)||[]).length,5);
+  assert.equal((page.match(/<script\b/gi)||[]).length,11);
+  assert.equal((page.match(/<script\b[^>]*\bsrc=/gi)||[]).length,11);
   assert.doesNotMatch(page,/<style[\s>]/i);
   assert.doesNotMatch(page,/\son[a-z]+\s*=/i);
-  for(const name of ['academy-app.js','academy-sala-data.js','academy-extra-data.js','academy-assets.js','confronti-forum.js'])assert.match(page,new RegExp(name.replace(/[.*+?^$\{\}()|[\]\\]/g,'\\$&')));
+  for(const name of ['academy-app.js','academy-sala-data.js','academy-extra-data.js','academy-assets.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js'])assert.ok(page.includes(name),name);
 });
 
 test('strict script CSP and isolation headers',()=>{
@@ -36,7 +36,7 @@ test('strict script CSP and isolation headers',()=>{
 });
 
 test('all application scripts can be parsed',()=>{
-  for(const name of ['academy-assets.js','academy-sala-data.js','academy-extra-data.js','academy-app.js','confronti-forum.js'])assert.doesNotThrow(()=>new vm.Script(read(name),{filename:name}));
+  for(const name of ['academy-assets.js','academy-sala-data.js','academy-extra-data.js','academy-app.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js'])assert.doesNotThrow(()=>new vm.Script(read(name),{filename:name}));
 });
 
 test('forum recognizes common accidental identifiers',()=>{

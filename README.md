@@ -4,6 +4,22 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.2 · Microlezioni e ripassi professionali
+
+L'Academy presenta ora i 6 corsi (Sala, Cucina e Bar, Fondamenta e Intermedio) in **72 capitoli suddivisi in 360 microattività**. Ogni capitolo propone **contesto, analisi, procedura, caso applicativo con riflessione scritta e verifica formativa**, senza gamification infantile. L'app salva il punto esatto e propone ripassi a 1, 3, 7, 14 e 30 giorni dopo verifiche riuscite.
+
+Lo Skill Check rimane indipendente: non mostra feedback durante la prova e può suggerire di partire direttamente da una specifica attività, senza marcare i passaggi saltati come studiati. Sono disponibili programma classico, modalità libera, backup privato e ripristino controllato. Non è prevista alcuna certificazione, valutazione professionale osservata o sincronizzazione online.
+
+Dettagli e limiti: [Microlearning](docs/MICROLEARNING.md) · test: `node --test tests/microlearning-smoke.cjs`.
+
+## v2.1 · Tre corsi intermedi completi
+
+Aggiunti percorsi dedicati di **Sala, Cucina e Bar**, ciascuno con **12 lezioni / 4 moduli**, contenuti di livello operativo, procedure, casi applicativi, esercitazioni, schede e fonti. In totale **36 nuove lezioni**, portando l'Academy a **72 lezioni / 24 moduli**.
+
+Ogni corso ha 24 quesiti di allenamento, uno **Skill Check intermedio indipendente da 16 scenari**, verifiche di modulo da 6 quesiti e una finale con 8 situazioni nuove. Il superamento dei fondamentali può suggerire direttamente il corso intermedio senza ripetere le basi. I corsi restano accessibili liberamente e non certificano competenze osservate.
+
+Dettagli: [Programmi intermedi](docs/INTERMEDIATE_COURSES.md) · test: `node --test tests/intermediate-smoke.cjs`.
+
 ## v2.0 · Posizionamento guidato dopo lo Skill Check
 
 Lo Skill Check ora genera un percorso personalizzato e privato per Sala, Cucina e Bar. Ogni modulo è valutato separatamente: chi dimostra di conoscere già le basi può accedere direttamente alle verifiche applicative, mentre gli errori critici (per esempio sugli allergeni) indirizzano alle lezioni specifiche. Tutti i corsi restano liberamente consultabili e nessuna lezione viene marcata come studiata dal test.

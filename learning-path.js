@@ -7,20 +7,23 @@ const VERSION=1;
 const SAFE_LESSONS={
  sala:{M01:"SAL-003",M02:"SAL-006",M03:"SAL-008",M04:"SAL-011"},
  cucina:{CUCINAM1:"CUC-003",CUCINAM2:"CUC-006",CUCINAM3:"CUC-008",CUCINAM4:"CUC-011"},
- bar:{BARM1:"BAR-003",BARM2:"BAR-006",BARM3:"BAR-009",BARM4:"BAR-012"}
+ bar:{BARM1:"BAR-003",BARM2:"BAR-006",BARM3:"BAR-009",BARM4:"BAR-012"},
+ "sala-intermedio":{SALIM1:"SAL-I002",SALIM2:"SAL-I004",SALIM3:"SAL-I007",SALIM4:"SAL-I012"},
+ "cucina-intermedio":{CUCIM1:"CUC-I003",CUCIM2:"CUC-I005",CUCIM3:"CUC-I007",CUCIM4:"CUC-I012"},
+ "bar-intermedio":{BARIM1:"BAR-I003",BARIM2:"BAR-I005",BARIM3:"BAR-I008",BARIM4:"BAR-I012"}
 };
 // Cross-cutting scenarios must contribute to the module they actually probe.
 const TRANSVERSAL={
  cucina:{"CUC-SC17":"CUCINAM2","CUC-SC18":"CUCINAM2","CUC-SC19":"CUCINAM4","CUC-SC20":"CUCINAM4"},
  bar:{"BAR-SC17":"BARM3","BAR-SC18":"BARM3","BAR-SC19":"BARM2","BAR-SC20":"BARM4"}
 };
-const isId=x=>typeof x==="string"&&/^(?:SAL|BAR|CUC)-\d{3}$/.test(x);
+const isId=x=>typeof x==="string"&&/^(?:SAL|BAR|CUC)-(?:I)?\d{3}$/.test(x);
 function gradeToModule(courseId,item,course){
  if(course.modules.some(m=>m.id===item.module))return item.module;
  return TRANSVERSAL[courseId]?.[item.id]||null;
 }
 function build(courseId,course,grades,options={}){
- if(!["sala","cucina","bar"].includes(courseId)||!course||!Array.isArray(course.modules)||!Array.isArray(course.lessons)||!Array.isArray(grades)||grades.length<16)return null;
+ if(!["sala","cucina","bar","sala-intermedio","cucina-intermedio","bar-intermedio"].includes(courseId)||!course||!Array.isArray(course.modules)||!Array.isArray(course.lessons)||!Array.isArray(grades)||grades.length<16)return null;
  const modIds=new Set(course.modules.map(m=>m.id));
  const validLessons=new Set(course.lessons.map(l=>l.id));
  const groups=Object.fromEntries(course.modules.map(m=>[m.id,[]]));
@@ -53,21 +56,24 @@ function build(courseId,course,grades,options={}){
  const priorities=[...weak].sort((a,b)=>(b.criticalErrors>0?1:0)-(a.criticalErrors>0?1:0)||a.percent-b.percent);
  const lessonIds=[...new Set(priorities.flatMap(m=>m.lessonIds))];
  const level=mastered===4&&criticalErrors===0?"applicazione":mastered>=2?"mirato":"fondamenta";
- const summary=level==="applicazione"
-   ?"Hai dimostrato una buona padronanza dei contenuti introduttivi: puoi passare alle prove applicative senza ripartire dalle basi."
+ const intermediate=courseId.endsWith("-intermedio");
+ const summary=intermediate?(level==="applicazione"?"Hai dimostrato buona padronanza dei casi intermedi proposti: puoi affrontare la verifica finale del percorso.":level==="mirato"?"La diagnosi evidenzia moduli intermedi già solidi e altri da approfondire con lezioni mirate.":"La diagnosi indica aspetti operativi intermedi da consolidare, con priorità alle procedure critiche."):
+ level==="applicazione"
+   ?"Hai mostrato una buona preparazione sui fondamentali: puoi accedere direttamente al corso intermedio del tuo reparto senza ripetere le lezioni iniziali."
    :level==="mirato"
    ?"Hai già solide conoscenze in alcuni moduli: concentrati sulle lacune individuate, senza ripetere tutto il programma."
    :"È consigliato lavorare sui moduli ancora fragili, iniziando dai rischi e dalle procedure fondamentali.";
  return {version:VERSION,courseId,createdAt:new Date().toISOString(),
    percent:Math.round(correct/total*100),correct,total,criticalErrors,masteredCount:mastered,
    level,summary,modules:moduleResults,lessonIds,enabled:true,
-   accessibleMode:!!options.accessibleMode,assessmentScope:"fondamenta",
-   note:"Diagnosi orientativa di conoscenze introduttive. Non certifica competenze pratiche, padronanza avanzata o sicurezza professionale."};
+   accessibleMode:!!options.accessibleMode,assessmentScope:intermediate?"intermedio":"fondamenta",
+   note:intermediate?"Diagnosi orientativa dei contenuti intermedi. Non certifica competenze osservate o qualifiche professionali.":"Diagnosi orientativa di conoscenze introduttive. Non certifica competenze pratiche, padronanza avanzata o sicurezza professionale."};
 }
 function valid(plan,courseId,course){
  if(!plan||plan.version!==VERSION||plan.courseId!==courseId||!Array.isArray(plan.modules)||plan.modules.length!==course.modules.length||!Array.isArray(plan.lessonIds)||typeof plan.enabled!=="boolean")return false;
  const idset=new Set(course.lessons.map(x=>x.id));
  if(plan.lessonIds.length>12||!plan.lessonIds.every(id=>idset.has(id)))return false;
+ if(!["intermedio","fondamenta"].includes(plan.assessmentScope))return false;
  if(!["fondamenta","mirato","applicazione"].includes(plan.level))return false;
  if(!Number.isInteger(plan.percent)||plan.percent<0||plan.percent>100||!Number.isInteger(plan.criticalErrors)||plan.criticalErrors<0||!Number.isInteger(plan.masteredCount)||plan.masteredCount<0||plan.masteredCount>4)return false;
  if(!plan.modules.every((m,i)=>m&&m.id===course.modules[i].id&&["consolidato","mirato","prioritario"].includes(m.status)&&Number.isInteger(m.percent)&&m.percent>=0&&m.percent<=100&&Number.isInteger(m.total)&&m.total>=3&&m.total<=20&&Number.isInteger(m.criticalErrors)&&m.criticalErrors>=0))return false;

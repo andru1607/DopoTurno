@@ -35,3 +35,16 @@
 .lp-card.lp-small .lp-summary{font-size:12.5px}
 @media(max-width:650px){.lp-counts{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.lp-count{padding:11px 9px}.lp-count strong{font-size:18px}.lp-count span{font-size:10px}.lp-modules{grid-template-columns:1fr}.lp-actions{flex-direction:column;align-items:stretch}.lp-actions .btn{width:100%;justify-content:center}.lp-card{padding:17px}}
 @media(prefers-reduced-motion:reduce){.lp-card *{scroll-behavior:auto}}
+
+/* Academy v2.1: a separate, professional intermediate catalog. */
+.intermediate-catalog{margin-top:28px;padding-top:4px}
+.intermediate-catalog>.section-head{margin-top:20px}
+.intermediate-catalog>.micro{line-height:1.65;margin:13px 2px 4px}
+.intermediate-catalog .course-card{border-color:rgba(180,197,219,.24)}
+.intermediate-catalog .course-card:hover{border-color:rgba(239,177,132,.65)}
+.intermediate-catalog .overlay-badge{background:#253d50;color:#ffe0c0;border:1px solid rgba(255,226,192,.3)}
+.intermediate-catalog .course-foot{margin-top:auto}
+.intermediate-catalog .course-info{display:flex;flex-direction:column;min-height:190px}
+.intermediate-catalog .course-info>p{line-height:1.5}
+.lp-card .lp-count span{line-height:1.35}
+@media(max-width:650px){.intermediate-catalog{margin-top:21px}.intermediate-catalog>.section-head{gap:9px;align-items:flex-start}}

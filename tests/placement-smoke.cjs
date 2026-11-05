@@ -92,6 +92,7 @@ test('Diagnostic feedback is only integrated into results and course paths, not 
  assert.match(app,/recommendedLessonId/);
  const testRun=app.slice(app.indexOf('function testRun(){'),app.indexOf('function gradeItem('));
  assert.doesNotMatch(testRun,/placementPanel|PLACEMENT\.build/);
- assert.match(html,/learning-path\.js\?v=2\.0/);
- assert.match(html,/learning-path\.css\?v=2\.0/);
+ assert.match(html,/learning-path\.js\?v=2\.2/);
+ assert.match(html,/learning-path\.css\?v=2\.2/);
+ assert.match(html,/microlearning\.js\?v=2\.2/);
 });
