@@ -1,0 +1,31 @@
+/* DopoTurno 2.3 · practical shift playbook */
+.tips-wrap{max-width:1050px;margin:0 auto;padding-bottom:40px;color:#e8f1f9}.tips-wrap *{box-sizing:border-box}
+.tips-back button{border:0;background:transparent;color:#4e7192;font-size:13px;font-weight:800;padding:9px 0;margin-bottom:15px;cursor:pointer}
+.tips-hero{background:linear-gradient(120deg,#1c3144,#2b4c61);border:1px solid #4e6d82;border-radius:20px;padding:clamp(21px,4vw,37px)}
+.tips-eyebrow{display:block;color:#f3c494;font-size:11px;letter-spacing:.12em;font-weight:850;margin-bottom:12px}
+.tips-hero h1{color:#fff;font-size:clamp(28px,5vw,42px);margin:0 0 12px;line-height:1.15}.tips-hero p{color:#d4e3ef;font-size:14px;line-height:1.7;max-width:730px;margin:0 0 18px}
+.tips-stats{display:flex;flex-wrap:wrap;gap:8px 19px;color:#e5f1fa;font-size:12px}.tips-stats strong{color:#fff}
+.tips-controls{margin:18px 0;background:#22394c;border:1px solid #4c6981;border-radius:15px;padding:18px}
+.tips-controls label{display:block;font-weight:800;color:#fff;font-size:13px;margin-bottom:9px}
+.tips-controls input{width:100%;background:#102437;border:1px solid #7694aa;color:#fff;border-radius:10px;padding:12px 14px;font:inherit;font-size:14px}.tips-controls input::placeholder{color:#adc0d0}
+.tips-filters{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.tips-filters button{background:#314b61;border:1px solid #647f94;border-radius:9px;color:#e3eff9;font-size:12px;font-weight:750;padding:9px 12px;cursor:pointer}
+.tips-filters button.active{background:#f1c594;border-color:#f1c594;color:#1e3140}
+.tips-count{font-size:11px;color:#cbdce9;margin:14px 0 0}
+.tips-list{display:grid;gap:10px}.tips-item{border:1px solid #4c6b82;background:#20374a;border-radius:13px;overflow:hidden}
+.tips-item-head{width:100%;border:0;background:transparent;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:20px;text-align:left;padding:16px 19px;cursor:pointer}
+.tips-item-head>span{display:flex;flex-direction:column;gap:5px;min-width:0}.tips-item-head small{color:#f4c99c;font-size:10px;font-weight:800;letter-spacing:.055em}
+.tips-item-head strong{font-size:15px;line-height:1.35;color:#fff}.tips-problem{color:#d1e0eb;font-size:12.5px;line-height:1.55}
+.tips-item-head>b{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#38536a;color:#fff;font-size:19px}
+.tips-details{padding:3px 19px 19px;border-top:1px solid #49657a;color:#d9e8f2}
+.tips-details h3{font-size:12px;color:#f6cf9e;margin:16px 0 5px}.tips-details p{font-size:13px;line-height:1.75;margin:0}
+.tips-caution{padding:0 13px 13px;border:1px solid #b18a72;background:#493d3a;border-radius:9px;margin-top:13px}
+.tips-caution h3{color:#ffdbb6}.tips-try{color:#b8d3e6;font-size:11.5px!important;margin-top:13px!important}
+.tips-disclaimer{margin-top:23px;border:1px solid #8c9fb0;border-radius:12px;padding:19px;background:#24394b}
+.tips-disclaimer strong{font-size:13px;color:#fff}.tips-disclaimer p{font-size:12px;color:#d5e4ef;line-height:1.7;margin:8px 0 0}
+.tips-empty{padding:22px;border:1px dashed #7895aa;border-radius:10px;color:#d1e1eb}
+.tips-entry{margin:16px 0;background:linear-gradient(125deg,#294a5c,#263e50);border:1px solid #64849a;border-radius:14px;padding:19px 21px}
+.tips-entry h3{color:#fff;font-size:17px;margin:0 0 7px}.tips-entry p{color:#d4e3ed;font-size:12.5px;line-height:1.6;margin:0 0 14px}
+.tips-entry .btn{min-height:39px}
+.tips-wrap button:focus-visible,.tips-wrap input:focus-visible{outline:3px solid #eec38f;outline-offset:3px}
+@media(max-width:600px){.tips-hero{border-radius:14px;padding:20px}.tips-controls{padding:14px}.tips-item-head{padding:14px}.tips-item-head strong{font-size:14px}.tips-details{padding:2px 14px 15px}.tips-filters button{font-size:11px;padding:9px 10px}}
