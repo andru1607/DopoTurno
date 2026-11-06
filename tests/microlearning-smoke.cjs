@@ -119,7 +119,7 @@ test('Backup sanitation retains only known lesson IDs and limits private writing
 test('Deep links do not execute scripts, and diagnosis is free from microlearning feedback',()=>{
  const t=setup(),file=read('index.html'),app=read('academy-app.js'),micro=read('microlearning.js');
  assert.match(file,/microlearning\.js\?v=2\.2/);
- assert.match(file,/microlearning\.css\?v=2\.2/);
+ assert.match(file,/microlearning\.css\?v=2\.4\.1/);
  assert.doesNotMatch(file,/<script>(?:.|\n)*?<\/script>/);
  assert.ok(app.includes('microStep'));
  assert.ok(app.includes('microCourse'));

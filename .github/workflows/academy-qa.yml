@@ -1,0 +1,41 @@
+name: Academy quality checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  academy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout reviewed code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: JavaScript and content regression tests
+        run: node --test tests/*-smoke.cjs
+
+      - name: Install Playwright
+        run: npm install --no-save --no-audit --no-fund playwright@1.56.1
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start local static preview
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/dopoturno-browser.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/dopoturno-browser.log
+          exit 1
+
+      - name: Responsive browser and keyboard QA
+        run: node tests/mobile-browser.e2e.cjs

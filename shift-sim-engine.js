@@ -63,26 +63,45 @@ function persist(ctx){
  ctx.saved.shiftSimDraft=r.phase==="finished"?null:{id:r.id,step:r.step,phase:r.phase,choices:[...r.choices]};
  if(!ctx.save()&&ctx.toast)ctx.toast("Il browser non ha salvato: verifica lo spazio disponibile.");return true;
 }
+/* The app redraws the current view after a choice. Move keyboard and VoiceOver
+ * focus to the new relevant content, instead of leaving it on a removed button.
+ * All selectors in this function are authored internally, never user input. */
+function focusAfter(ctx,selector,scroll="nearest"){
+ const node=ctx.document?.querySelector?.(selector);
+ if(!node||typeof node.focus!=="function")return false;
+ if(!node.hasAttribute?.("tabindex"))node.setAttribute?.("tabindex","-1");
+ try{node.focus({preventScroll:true})}catch{node.focus()}
+ if(typeof node.scrollIntoView==="function")node.scrollIntoView({block:scroll,behavior:"auto"});
+ return true;
+}
+function focusControl(ctx,action,id){
+ const controls=ctx.document?.querySelectorAll?.('[data-action="'+action+'"]');
+ if(!controls)return false;
+ const node=Array.from(controls).find(x=>(action==="shiftInspect"?x.dataset?.step:x.dataset?.id)===id);
+ if(!node||typeof node.focus!=="function")return false;
+ try{node.focus({preventScroll:true})}catch{node.focus()}
+ return true;
+}
 function start(ctx,id,reset=false){
  if(!lookup(id))return false;
  ensure(ctx.saved);
  if(reset||ctx.saved.shiftSimDraft?.id!==id)ctx.saved.shiftSimDraft=null;
  ctx.state.shiftSimId=id;ctx.state.shiftSimRun=null;ctx.state.shiftInspect=null;
- ctx.setPage("shiftSimRun",{shiftSimId:id});return true;
+ ctx.setPage("shiftSimRun",{shiftSimId:id});focusAfter(ctx,".shift-case-header h1","start");return true;
 }
 function choose(ctx,index){
  const r=getRun(ctx);
  if(!r||r.phase!=="question"||!Number.isInteger(index)||index<0||index>2||r.choices.length!==r.step)return false;
- r.choices.push(index);r.phase="feedback";persist(ctx);ctx.render();return true;
+ r.choices.push(index);r.phase="feedback";persist(ctx);ctx.render();focusAfter(ctx,".shift-feedback","start");return true;
 }
 function next(ctx){
  const r=getRun(ctx);if(!r||r.phase!=="feedback")return false;
- if(r.step<2){r.step++;r.phase="question";ctx.state.shiftInspect=null;persist(ctx);ctx.render();return true;}
+ if(r.step<2){r.step++;r.phase="question";ctx.state.shiftInspect=null;persist(ctx);ctx.render();focusAfter(ctx,".shift-decision h2","start");return true;}
  r.phase="finished";
  ctx.saved.shiftSimResults[r.id]={choices:[...r.choices],finishedAt:new Date().toISOString(),...score(lookup(r.id),r.choices)};
  ctx.saved.shiftSimDraft=null;
  if(!ctx.save()&&ctx.toast)ctx.toast("Il risultato non è stato salvato sul dispositivo.");
- ctx.render();return true;
+ ctx.render();focusAfter(ctx,".shift-result h2","start");return true;
 }
 function forTip(tipId){
  const tip=window.DopoTurnoTips?.TIPS?.find(t=>t.id===tipId);
@@ -133,11 +152,12 @@ function playPage(ctx){
 function catalogPage(ctx){
  ensure(ctx.saved);
  const f=ctx.state.shiftFilters||{role:"tutti",phase:"tutte",query:""},q=String(f.query||"").toLocaleLowerCase("it").trim();
- const list=CASES.filter(c=>(f.role==="tutti"||c.role===f.role)&&(f.phase==="tutte"||c.phase===f.phase)&&(!q||[c.title,c.focus,c.opening,c.goal].join(" ").toLocaleLowerCase("it").includes(q)));
+ const list=CASES.filter(c=>(f.role==="tutti"||c.role===f.role)&&(f.phase==="tutte"||c.phase===f.phase));
+ const visible=list.filter(c=>!q||[c.title,c.focus,c.opening,c.goal].join(" ").toLocaleLowerCase("it").includes(q));
  const count=Object.keys(validResults(ctx.saved.shiftSimResults)).length;
  return '<div class="shift-wrap"><div class="shift-back"><button data-page="academy">← Academy</button><button data-page="turnTips">Trucchi del turno</button></div><header class="shift-catalog-header"><span class="shift-eyebrow">DOPOTURNO / SIMULAZIONI FORMATIVE</span><h1>Dentro il servizio.</h1><p>18 casi di Sala, Cucina e Bar. Tre decisioni per caso, conseguenze visibili, schemi del reparto e debriefing professionale. Nessuna penalità per chi riprova.</p><div class="shift-numbers"><span><strong>18</strong> scenari</span><span><strong>54</strong> decisioni</span><span><strong>'+count+'</strong> già svolti</span></div></header>'
- +'<section class="shift-filters"><label for="shiftSearch">Cerca una situazione</label><input id="shiftSearch" type="search" maxlength="100" value="'+ESC(f.query||"")+'" placeholder="Allergeni, vassoio, pass, latte, gestione del pienone…"><div class="shift-filter-row">'+[["tutti","Tutti"],["sala","Sala"],["cucina","Cucina"],["bar","Bar"]].map(([id,name])=>'<button type="button" class="'+(f.role===id?"active":"")+'" data-action="shiftRole" data-id="'+id+'" aria-pressed="'+(f.role===id)+'">'+name+'</button>').join("")+'</div><div class="shift-filter-row">'+[["tutte","Tutte le fasi"],...PHASES.map(x=>[x,x])].map(([id,name])=>'<button type="button" class="'+(f.phase===id?"active":"")+'" data-action="shiftPhase" data-id="'+ESC(id)+'" aria-pressed="'+(f.phase===id)+'">'+ESC(name)+'</button>').join("")+'</div><p class="shift-count" role="status">'+list.length+' scenari trovati</p></section>'
- +'<section class="shift-cards">'+(list.length?list.map(c=>{const done=ctx.saved.shiftSimResults[c.id],draft=ctx.saved.shiftSimDraft?.id===c.id;return '<article class="shift-card"><small>'+ESC(ROLES[c.role])+' · '+ESC(c.phase)+'</small><h2>'+ESC(c.title)+'</h2><p>'+ESC(c.focus)+'</p><div><span>'+(draft?"In corso":done?"Già svolto":"Tre scelte e debriefing")+'</span><button type="button" data-action="shiftOpen" data-id="'+c.id+'" class="btn outline small">'+(draft?"Riprendi":done?"Ripeti":"Inizia")+'</button></div></article>'}).join(""):'<div class="shift-empty">Nessuno scenario corrisponde a questi filtri.</div>')+'</section><p class="shift-disclaimer">Questi sono esercizi formativi, non test diagnostici. Le procedure aziendali e gli obblighi di sicurezza restano prioritari.</p></div>';
+ +'<section class="shift-filters"><label for="shiftSearch">Cerca una situazione</label><input id="shiftSearch" type="search" maxlength="100" value="'+ESC(f.query||"")+'" placeholder="Allergeni, vassoio, pass, latte, gestione del pienone…"><div class="shift-filter-row">'+[["tutti","Tutti"],["sala","Sala"],["cucina","Cucina"],["bar","Bar"]].map(([id,name])=>'<button type="button" class="'+(f.role===id?"active":"")+'" data-action="shiftRole" data-id="'+id+'" aria-pressed="'+(f.role===id)+'">'+name+'</button>').join("")+'</div><div class="shift-filter-row">'+[["tutte","Tutte le fasi"],...PHASES.map(x=>[x,x])].map(([id,name])=>'<button type="button" class="'+(f.phase===id?"active":"")+'" data-action="shiftPhase" data-id="'+ESC(id)+'" aria-pressed="'+(f.phase===id)+'">'+ESC(name)+'</button>').join("")+'</div><p class="shift-count" role="status">'+visible.length+' scenari trovati</p></section>'
+ +'<section class="shift-cards">'+(list.length?list.map(c=>{const done=ctx.saved.shiftSimResults[c.id],draft=ctx.saved.shiftSimDraft?.id===c.id,match=!q||[c.title,c.focus,c.opening,c.goal].join(" ").toLocaleLowerCase("it").includes(q);return '<article class="shift-card" data-case-id="'+c.id+'"'+(match?'':' hidden')+'><small>'+ESC(ROLES[c.role])+' · '+ESC(c.phase)+'</small><h2>'+ESC(c.title)+'</h2><p>'+ESC(c.focus)+'</p><div><span>'+(draft?"In corso":done?"Già svolto":"Tre scelte e debriefing")+'</span><button type="button" data-action="shiftOpen" data-id="'+c.id+'" class="btn outline small">'+(draft?"Riprendi":done?"Ripeti":"Inizia")+'</button></div></article>'}).join(""):'<div class="shift-empty">Nessuno scenario corrisponde a questi filtri.</div>')+'</section><p class="shift-disclaimer">Questi sono esercizi formativi, non test diagnostici. Le procedure aziendali e gli obblighi di sicurezza restano prioritari.</p></div>';
 }
 function action(ctx,key,el){
  const id=el?.dataset?.id,step=Number(el?.dataset?.step);
@@ -145,22 +165,33 @@ function action(ctx,key,el){
  if(key==="shiftRetry")return start(ctx,ctx.state.shiftSimId,true);
  if(key==="shiftChoose")return choose(ctx,step);
  if(key==="shiftNext")return next(ctx);
- if(key==="shiftInspect"&&Number.isInteger(step)&&step>=0&&step<5){ctx.state.shiftInspect=ctx.state.shiftInspect===step?null:step;ctx.render();return true}
+ if(key==="shiftInspect"&&Number.isInteger(step)&&step>=0&&step<5){ctx.state.shiftInspect=ctx.state.shiftInspect===step?null:step;ctx.render();focusControl(ctx,"shiftInspect",String(step));return true}
  if(key==="shiftRole"||key==="shiftPhase"){
   const f=ctx.state.shiftFilters||(ctx.state.shiftFilters={role:"tutti",phase:"tutte",query:""});
   if(key==="shiftRole"&&["tutti","sala","cucina","bar"].includes(id))f.role=id;
   else if(key==="shiftPhase"&&["tutte",...PHASES].includes(id))f.phase=id;
   else return false;
-  ctx.render();return true;
+  ctx.render();focusControl(ctx,key,id);return true;
  }
  return false;
 }
 function search(ctx,text){
  const f=ctx.state.shiftFilters||(ctx.state.shiftFilters={role:"tutti",phase:"tutte",query:""});
- const before=ctx.document.getElementById("shiftSearch"),cursor=before?.selectionStart;
- f.query=String(text||"").slice(0,100);ctx.render();
- const after=ctx.document.getElementById("shiftSearch");
- if(after&&typeof cursor==="number"&&typeof after.focus==="function"){after.focus();after.setSelectionRange?.(cursor,cursor)}
+ f.query=String(text||"").slice(0,100);
+ const q=f.query.toLocaleLowerCase("it").trim();
+ const cards=ctx.document?.querySelectorAll?.(".shift-card[data-case-id]");
+ if(cards){
+   let count=0;
+   for(const card of cards){
+     const c=lookup(card.dataset.caseId);
+     const visible=!!c&&(!q||[c.title,c.focus,c.opening,c.goal].join(" ").toLocaleLowerCase("it").includes(q));
+     card.hidden=!visible;if(visible)count++;
+   }
+   const status=ctx.document.querySelector?.(".shift-count");
+   if(status)status.textContent=count+" scenari trovati";
+   return true;
+ }
+ ctx.render();return true;
 }
 window.DopoTurnoShift={CASES,validate,lookup,ensure,score,validDraft,validResults,importState,forTip,getRun,start,choose,next,playPage,catalogPage,action,search};
 })();

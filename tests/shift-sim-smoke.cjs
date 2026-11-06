@@ -148,3 +148,39 @@ test('All decision branches render, and inline executable scripts remain prohibi
  for(const f of ['shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','shift-sim.css'])assert.ok(index.includes(f),f);
  assert.doesNotMatch(index,/<script>(?:.|\n)*?<\/script>/);
 });
+
+test('Keyboard and VoiceOver focus follows choice feedback, decisions and map stations',()=>{
+ const h=harness(),a=h.api,seq=[];
+ const node=selector=>({
+   dataset:{id:'sala',step:'2'},hasAttribute(){return false},setAttribute(name,value){seq.push(['attr',selector,name,value])},
+   focus(){seq.push(['focus',selector])},scrollIntoView(){seq.push(['scroll',selector])}
+ });
+ h.sandbox.document.querySelector=selector=>node(selector);
+ h.sandbox.document.querySelectorAll=selector=>selector==='[data-action="shiftInspect"]'?[node('station-2')]:null;
+ a.onAction('shiftOpen',{dataset:{id:'S01'}});
+ assert.ok(seq.some(x=>x[1]==='.shift-case-header h1'), 'focus heading on open');
+ a.onAction('shiftChoose',{dataset:{step:'0'}});
+ assert.ok(seq.some(x=>x[1]==='.shift-feedback'), 'focus outcome after choice');
+ a.onAction('shiftNext',{dataset:{}});
+ assert.ok(seq.some(x=>x[1]==='.shift-decision h2'),'focus next question');
+ a.onAction('shiftInspect',{dataset:{step:'2'}});
+ assert.ok(seq.some(x=>x[1]==='station-2'),'map station retains focus');
+});
+test('In-place search filters the existing list without re-rendering the mobile text field',()=>{
+ const h=harness(),sim=h.shift,cards=[
+  {dataset:{caseId:'S02'},hidden:false},
+  {dataset:{caseId:'B02'},hidden:false},
+  {dataset:{caseId:'S01'},hidden:false}
+ ];
+ let renders=0;const indicator={textContent:''};
+ const ctx={state:{shiftFilters:{role:'tutti',phase:'tutte',query:''}},
+   document:{querySelectorAll(sel){return sel==='.shift-card[data-case-id]'?cards:null},querySelector(sel){return sel==='.shift-count'?indicator:null}},
+   render(){renders++}};
+ assert.equal(sim.search(ctx,'allergia'),true);
+ assert.equal(renders,0,'no full redraw on mobile input');
+ assert.ok(cards.some(c=>c.hidden)&&cards.some(c=>!c.hidden));
+ assert.ok(indicator.textContent.includes('scenari trovati'));
+ sim.search(ctx,'');
+ assert.equal(cards.filter(c=>c.hidden).length,0);
+ assert.equal(renders,0);
+});

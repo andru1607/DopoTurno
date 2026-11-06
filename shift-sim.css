@@ -103,3 +103,25 @@
 @media(max-width:940px){.shift-layout{grid-template-columns:1fr}.shift-map-panel{position:static}.shift-map{aspect-ratio:1.9;max-height:370px}}
 @media(max-width:640px){.shift-wrap{padding-bottom:40px}.shift-catalog-header,.shift-case-header{border-radius:14px;padding:19px}.shift-decision,.shift-result{padding:17px 14px}.shift-map-panel{padding:13px}.shift-map{aspect-ratio:1.4;min-height:220px}.shift-pin span{display:none}.shift-pin b{width:30px;height:30px}.shift-choices .shift-choice{font-size:12.5px;padding:12px}.shift-next,.shift-actions .btn{width:100%;justify-content:center}.shift-card{min-height:0}.shift-back{gap:12px}.shift-map-list{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.shift-wrap *{scroll-behavior:auto!important;transition:none!important}}
+
+/* v2.4.1: mobile and keyboard accessibility fixes.
+   Touch targets stay comfortably tappable without changing visual density. */
+.shift-wrap{overflow-wrap:anywhere}
+.shift-card[hidden]{display:none!important}
+.shift-pin{min-width:44px;min-height:44px;justify-content:center}
+.shift-pin b{width:36px;height:36px;flex:none}
+.shift-back button{min-height:44px;display:inline-flex;align-items:center}
+.shift-filter-row button{min-height:44px}
+.shift-choice{min-height:48px}
+.shift-map-note{min-height:44px}
+.shift-case-header h1,.shift-decision h2,.shift-result h2,.shift-feedback{scroll-margin-top:16px}
+.shift-choice:focus-visible,.shift-pin:focus-visible,.shift-filter-row button:focus-visible,.shift-back button:focus-visible,.shift-card button:focus-visible{outline:3px solid #ffe1b8;outline-offset:3px}
+@media(max-width:640px){
+ .shift-pin{min-width:44px;min-height:44px}
+ .shift-pin b{width:36px;height:36px}
+ .shift-filter-row button{min-height:44px}
+ .shift-card .btn{min-height:44px}
+ .shift-numbers span{flex:0 1 auto}
+ .shift-catalog-header,.shift-case-header{min-width:0}
+ .shift-choices,.shift-layout,.shift-map-panel{min-width:0}
+}

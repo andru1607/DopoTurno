@@ -4,6 +4,14 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.4.1 · Accessibilità mobile e controlli di qualità
+
+Interventi sul percorso delle simulazioni: **focus mantenuto tra scelta, feedback e debriefing**, target tattili da **44 px** per mappe e filtri, tappe delle microlezioni più facili da utilizzare e ricerca del catalogo senza ricostruzione della schermata a ogni carattere.
+
+Sono stati aggiunti test automatici per la navigazione con tastiera e una suite Chromium che controlla layout e interazioni su sei viewport (320–1280 px), eseguita tramite GitHub Actions. Questo **non sostituisce un test fisico su Safari/iPhone né la revisione dei contenuti da parte di professionisti**.
+
+[Protocollo QA e limiti](docs/ACADEMY_QA_241.md) · [Simulazioni](https://dopoturno-academy-preview.vercel.app/#simulazioni).
+
 ## v2.4 · Simulazioni professionali di Sala, Cucina e Bar
 
 Aggiunti **18 casi pratici** (6 per reparto), con **54 decisioni**, **162 alternative**, mappe interattive delle postazioni e conseguenze visibili **dopo ogni scelta**. Il risultato include debriefing tecnico, errori critici e tre principi operativi. La simulazione è formativa e separata dagli Skill Check diagnostici.

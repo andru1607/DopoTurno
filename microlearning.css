@@ -108,3 +108,19 @@
 @media(max-width:880px){.micro-step-layout{grid-template-columns:1fr}.micro-aside{position:static}.micro-aside-card{display:none}}
 @media(max-width:650px){.micro-wrap{padding-bottom:40px}.micro-course-hero,.micro-review-hero{border-radius:15px;padding:19px}.micro-chapter-list{padding:5px 10px}.micro-chapter{padding:16px 8px}.micro-chapter-foot{width:100%;justify-content:space-between}.micro-chapter-foot .btn{min-width:105px}.micro-track-item{width:30px;height:30px}.micro-module-head{padding:17px 14px}.micro-module-head h2{font-size:16px}.micro-lesson-panel{padding:17px 13px}.micro-step-chip{font-size:9px;padding:9px 3px;gap:5px}.micro-step-chip span{width:21px;height:21px}.micro-tabs{gap:4px}.micro-lesson-content h2{font-size:21px}.micro-bottom-actions{flex-direction:column}.micro-bottom-actions .btn,.micro-hero-actions .btn{width:100%;justify-content:center}.micro-hero-actions{flex-direction:column}.micro-reading{font-size:13.5px}.micro-review-row{flex-wrap:wrap}.micro-review-row .btn{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.micro-wrap *{transition:none!important;scroll-behavior:auto!important}}
+
+/* v2.4.1: full-size touch targets and visible keyboard focus. */
+.micro-track-item{width:44px;min-width:44px;height:44px}
+.micro-mini-track{flex-wrap:wrap}
+.micro-step-chip{min-height:48px}
+.micro-back button,.micro-chapter-foot .btn{min-height:44px}
+.micro-chapter{min-width:0}
+.micro-chapter-text{overflow-wrap:anywhere}
+.micro-wrap button:focus-visible{outline:3px solid #f4cfaa;outline-offset:3px}
+@media(max-width:650px){
+ .micro-track-item{width:44px;min-width:44px;height:44px}
+ .micro-mini-track{gap:5px}
+ .micro-step-chip{min-height:48px}
+ .micro-chapter-foot{justify-content:flex-start;gap:12px}
+ .micro-chapter-foot .btn{min-height:44px}
+}
