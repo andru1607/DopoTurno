@@ -4,6 +4,18 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.4 · Simulazioni professionali di Sala, Cucina e Bar
+
+Aggiunti **18 casi pratici** (6 per reparto), con **54 decisioni**, **162 alternative**, mappe interattive delle postazioni e conseguenze visibili **dopo ogni scelta**. Il risultato include debriefing tecnico, errori critici e tre principi operativi. La simulazione è formativa e separata dagli Skill Check diagnostici.
+
+I **76 consigli «Trucchi del turno»** possono aprire un caso collegato. Per 56 consigli il collegamento è diretto; negli altri casi la UI indica esplicitamente che lo scenario riguarda soltanto lo stesso reparto. Il progresso si conserva nel browser e nei backup locali, senza qualifiche automatiche.
+
+**Apri:** [Simulazioni](https://dopoturno-academy-preview.vercel.app/#simulazioni) · [Specifiche e limiti](docs/SHIFT_SIMULATIONS.md) · Test: `node --test tests/shift-sim-smoke.cjs`.
+
+## v2.3 · Trucchi del turno
+
+76 suggerimenti operativi: 28 Sala, 24 Cucina e 24 Bar, filtrabili per fase di servizio, reparto e testo. Le tecniche non sostituiscono piano HACCP, procedure aziendali o formazione obbligatoria. [Catalogo](https://dopoturno-academy-preview.vercel.app/#turnTips).
+
 ## v2.2 · Microlezioni e ripassi professionali
 
 L'Academy presenta ora i 6 corsi (Sala, Cucina e Bar, Fondamenta e Intermedio) in **72 capitoli suddivisi in 360 microattività**. Ogni capitolo propone **contesto, analisi, procedura, caso applicativo con riflessione scritta e verifica formativa**, senza gamification infantile. L'app salva il punto esatto e propone ripassi a 1, 3, 7, 14 e 30 giorni dopo verifiche riuscite.

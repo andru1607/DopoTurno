@@ -52,3 +52,7 @@ Stato: **v1.9, prototipo solo locale. Non è una community multiutente e non gar
 ## v2.2: risposte ai casi e ripassi locali
 
 Il sistema conserva anche **microProgress, microReviews, microResponses e microLast** nel browser, ed esporta tali dati nel backup privato. Gli utenti sono invitati a non scrivere nomi di clienti/colleghi o informazioni aziendali sensibili nelle risposte libere. L'importatore valida gli identificativi prima di ripristinare i nuovi dati. Questa misura non equivale alla cifratura dei contenuti nel browser o a un sistema di autenticazione; il dispositivo condiviso resta un rischio.
+
+## 2.4: simulazioni formative
+
+Le decisioni delle simulazioni sono gestite separatamente dagli Skill Check. I risultati e la bozza sono archiviati soltanto in `shiftSimResults` e `shiftSimDraft`, nel browser, e nel backup locale che l'utente decide di esportare. L'importazione filtra scenari inesistenti, decisioni fuori indice e stati incompleti. Le opzioni sono contenuti editoriali fissi; non vengono caricati script remoti, non sono richieste API o credenziali, e le mappe sono elementi HTML con contenuti testuali escapati. Nessuna simulazione attribuisce qualifiche o attiva automaticamente un CV pubblico.

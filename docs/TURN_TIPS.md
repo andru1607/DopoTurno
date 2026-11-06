@@ -36,3 +36,7 @@ Le schede non sono procedure HACCP, istruzioni del produttore o normative sostit
 
 ## Evoluzione
 La community potrà proporre nuovi trucchi, ma non pubblicarli automaticamente nell'Academy. Sarà necessaria una coda di verifica editoriale, con controllo di accuratezza, sicurezza e privacy. Le proposte non devono includere informazioni identificative su clienti o colleghi.
+
+## Versione 2.4: allenamento su casi pratici
+
+L'accesso a «Trucchi del turno» include ora la sezione [Simulazioni](SHIFT_SIMULATIONS.md). Sono disponibili 18 scenari professionali (6 per reparto), 54 decisioni e schemi interattivi delle postazioni. Ciascuna scheda mostra una esercitazione pertinente: 56 collegamenti sono direttamente riferiti al tema del consiglio, mentre i 20 restanti sono chiaramente etichettati come casi **dello stesso reparto**, evitando di presentare come specifico un caso genericamente affine. I feedback non appaiono prima delle decisioni e lo Skill Check resta separato.

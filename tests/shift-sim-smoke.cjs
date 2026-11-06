@@ -1,0 +1,150 @@
+'use strict';
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const dataFiles=[
+ 'academy-sala-data.js','academy-extra-data.js',
+ 'intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js',
+ 'learning-path.js','microlearning.js','turn-tips.js',
+ 'shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js'
+];
+function harness(hash='#academy'){
+ const app={innerHTML:''},storage={},listeners={};
+ const sandbox={
+  window:{addEventListener(){},scrollTo(){},print(){}},
+  document:{getElementById(id){return id==='app'?app:null},addEventListener(k,f){listeners[k]=f},querySelector(){return null},createElement(){return {remove(){},parentNode:null}},body:{appendChild(){}}},
+  localStorage:{getItem:k=>storage[k]||null,setItem(k,v){storage[k]=v}},
+  location:{hash},
+  history:{pushState(_a,_b,url){sandbox.location.hash=url}},
+  setTimeout(){},requestAnimationFrame(fn){fn()},confirm(){return true}
+ };
+ vm.createContext(sandbox);
+ for(const f of dataFiles)vm.runInContext(read(f),sandbox,{filename:f,timeout:5000});
+ const code=read('academy-app.js'),tail='render();\n})();';
+ assert.equal(code.split(tail).length,2,'app source test hook');
+ vm.runInContext(code.replace(tail,'window.TEST={state,saved,render,onAction,setPage,backupData,readRoute,shiftContext};render();\n})();'),sandbox,{filename:'academy-app.js',timeout:10000});
+ return {app,api:sandbox.window.TEST,shift:sandbox.window.DopoTurnoShift,tips:sandbox.window.DopoTurnoTips,sandbox,storage};
+}
+test('Eighteen professional scenarios have 54 decision points and 162 plausible options',()=>{
+ const h=harness(),cases=h.shift.CASES,ids=new Set();
+ assert.equal(cases.length,18);
+ assert.equal(cases.reduce((n,c)=>n+c.steps.length,0),54);
+ assert.equal(cases.reduce((n,c)=>n+c.steps.reduce((m,s)=>m+s.choices.length,0),0),162);
+ for(const role of ['sala','cucina','bar'])assert.equal(cases.filter(c=>c.role===role).length,6);
+ for(const c of cases){
+  assert.ok(!ids.has(c.id),c.id);ids.add(c.id);
+  assert.equal(c.places.length,5,c.id);
+  assert.equal(c.debrief.length,3,c.id);
+  assert.ok(c.opening.length>100,c.id);
+  for(const b of c.steps){
+   assert.equal(b.choices.length,3,c.id);
+   assert.equal(b.choices.filter(x=>x.kind==='strong').length,1,c.id);
+   assert.ok(b.choices.every(x=>x.explanation.length>38),c.id);
+   assert.ok(b.choices.every(x=>!x.critical||x.kind==='weak'),c.id);
+  }
+ }
+});
+test('Academy, tips, scenarios, filters and visual workplace maps are connected',()=>{
+ const h=harness(),a=h.api,s=h.shift;
+ assert.match(h.app.innerHTML,/18 simulazioni formative/);
+ a.setPage('shiftSimList');
+ assert.equal(a.state.page,'shiftSimList');
+ assert.match(h.app.innerHTML,/18 scenari trovati/);
+ a.onAction('shiftRole',{dataset:{id:'cucina'}});
+ assert.match(h.app.innerHTML,/6 scenari trovati/);
+ a.onAction('shiftPhase',{dataset:{id:'Prima del servizio'}});
+ assert.match(h.app.innerHTML,/scenari trovati/);
+ a.onAction('shiftOpen',{dataset:{id:'C01'}});
+ assert.equal(a.state.page,'shiftSimRun');
+ assert.match(h.app.innerHTML,/Schema del reparto/);
+ assert.match(h.app.innerHTML,/aria-label="Esamina/);
+ assert.doesNotMatch(h.app.innerHTML,/Decisione solida/);
+ a.onAction('shiftInspect',{dataset:{step:'2'}});
+ assert.match(h.app.innerHTML,/Postazione 3/);
+ a.setPage('turnTips');
+ a.onAction('tipsToggle',{dataset:{id:'T001'}});
+ assert.match(h.app.innerHTML,/Simula questa situazione|Esercitati con un caso dello stesso reparto/);
+ assert.equal(h.tips.TIPS.length,76);
+ assert.ok(h.tips.TIPS.every(t=>s.forTip(t.id)?.case?.role===t.role));
+});
+test('A complete three-decision session saves state, reveals delayed feedback and provides a debrief',()=>{
+ const h=harness(),a=h.api,s=h.shift,id='S03',c=s.lookup(id);
+ a.onAction('shiftOpen',{dataset:{id}});
+ for(let step=0;step<3;step++){
+  assert.doesNotMatch(h.app.innerHTML,/Motivazione\./,'No answer feedback before the choice');
+  const best=c.steps[step].choices.findIndex(x=>x.kind==='strong');
+  a.onAction('shiftChoose',{dataset:{step:String(best)}});
+  assert.equal(a.state.shiftSimRun.phase,'feedback');
+  assert.match(h.app.innerHTML,/Decisione solida/);
+  if(step<2)assert.ok(a.saved.shiftSimDraft?.choices.length===step+1);
+  a.onAction('shiftNext',{dataset:{}});
+ }
+ assert.equal(a.state.shiftSimRun.phase,'finished');
+ assert.equal(a.saved.shiftSimResults[id].strong,3);
+ assert.equal(a.saved.shiftSimDraft,null);
+ assert.match(h.app.innerHTML,/DEBRIEFING FORMATIVO/);
+ assert.match(h.app.innerHTML,/Tre decisioni coerenti/);
+ assert.match(h.app.innerHTML,/non attestazione professionale/);
+ const backup=a.backupData();assert.ok(backup.shiftSimResults[id]);
+ a.onAction('shiftRetry',{dataset:{}});
+ assert.equal(a.state.shiftSimRun.step,0);
+ assert.equal(a.state.shiftSimRun.choices.length,0);
+});
+test('Critical decisions remain visible as risks and never become certificates',()=>{
+ const h=harness(),a=h.api,s=h.shift;
+ for(const id of ['S02','C04','B05']){
+  const c=s.lookup(id);
+  a.onAction('shiftOpen',{dataset:{id}});
+  for(let i=0;i<3;i++){
+   const choices=c.steps[i].choices;
+   const index=i===0?choices.findIndex(x=>x.critical):choices.findIndex(x=>x.kind==='strong');
+   assert.ok(index>=0,id);
+   a.onAction('shiftChoose',{dataset:{step:String(index)}});
+   if(i===0)assert.match(h.app.innerHTML,/Rischio critico nella decisione/);
+   a.onAction('shiftNext',{dataset:{}});
+  }
+  assert.ok(a.saved.shiftSimResults[id].critical>=1,id);
+  assert.match(h.app.innerHTML,/rischio critico/i);
+  assert.doesNotMatch(h.app.innerHTML,/certificazione riconosciuta|qualifica ottenuta/i);
+ }
+});
+test('In-progress scenarios survive the saved draft; malformed imports are discarded',()=>{
+ const h=harness(),a=h.api,s=h.shift,id='C02';
+ a.onAction('shiftOpen',{dataset:{id}});
+ a.onAction('shiftChoose',{dataset:{step:'1'}});
+ assert.equal(a.saved.shiftSimDraft.id,id);
+ a.state.shiftSimRun=null;
+ assert.equal(s.getRun(a.shiftContext()).phase,'feedback');
+ const data=s.importState({
+  shiftSimDraft:{id:'C02',step:0,phase:'feedback',choices:[1]},
+  shiftSimResults:{S01:{choices:[0,1,2],finishedAt:'2026-11-06'},EVIL:{choices:[0,1,2]}}
+ });
+ assert.ok(data.shiftSimDraft);
+ assert.equal(data.shiftSimResults.EVIL,undefined);
+ assert.equal(s.validDraft({id:'C02',step:2,phase:'feedback',choices:[1]}),null);
+ assert.equal(s.validDraft({id:'Z99',step:0,phase:'question',choices:[]}),null);
+ assert.ok(read('academy-app.js').includes('SHIFT.importState(d)'));
+});
+test('All decision branches render, and inline executable scripts remain prohibited',()=>{
+ const h=harness(),s=h.shift,a=h.api;
+ let visited=0;
+ for(const c of s.CASES){
+  for(let choice=0;choice<3;choice++){
+   a.onAction('shiftOpen',{dataset:{id:c.id}});
+   for(let i=0;i<3;i++){
+    const index=choice;
+    assert.doesNotMatch(h.app.innerHTML,/shift-feedback (?:strong|critical)/);
+    a.onAction('shiftChoose',{dataset:{step:String(index)}});
+    assert.equal(a.state.shiftSimRun.choices[i],index);
+    a.onAction('shiftNext',{dataset:{}});
+    visited++;
+   }
+   assert.equal(a.state.shiftSimRun.phase,'finished',c.id);
+  }
+ }
+ assert.equal(visited,162);
+ const index=read('index.html');
+ for(const f of ['shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','shift-sim.css'])assert.ok(index.includes(f),f);
+ assert.doesNotMatch(index,/<script>(?:.|\n)*?<\/script>/);
+});
