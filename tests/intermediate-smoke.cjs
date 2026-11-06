@@ -101,7 +101,9 @@ test('Boot, navigation, all test flows and resume are runnable without a backend
  vm.runInContext(original.replace(tail,'window.TEST={state,saved,render,onAction,buildTest,submitExam,placementFor,courseData};render();\n})();'),sandbox,{timeout:8000});
  const api=sandbox.window.TEST;
  assert.match(root.innerHTML,/Sala intermedia/);
+ api.onAction('academyRole',{dataset:{id:'bar'}});
  assert.match(root.innerHTML,/Bar intermedio/);
+ api.onAction('academyRole',{dataset:{id:'sala'}});
  for(const id of ['sala-intermedio','cucina-intermedio','bar-intermedio']){
    api.onAction('openCourse',{dataset:{id}});
    assert.equal(api.state.page,'microCourse',id);
