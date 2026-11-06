@@ -131,3 +131,6 @@
 .micro-bottom-actions .btn,.micro-back button{min-height:44px}
 .micro-mini-track{gap:6px}
 @media(max-width:650px){.micro-step-chip{min-height:60px;font-size:10px}}
+
+/* Consistent 44px keyboard and touch targets for every activity point. */
+.micro-track-item{min-width:44px;min-height:44px}

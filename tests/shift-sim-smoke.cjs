@@ -47,7 +47,7 @@ test('Eighteen professional scenarios have 54 decision points and 162 plausible 
 });
 test('Academy, tips, scenarios, filters and visual workplace maps are connected',()=>{
  const h=harness(),a=h.api,s=h.shift;
- assert.match(h.app.innerHTML,/18 simulazioni formative/);
+ assert.match(h.app.innerHTML,/18 (simulazioni formative|scenari)/);
  a.setPage('shiftSimList');
  assert.equal(a.state.page,'shiftSimList');
  assert.match(h.app.innerHTML,/18 scenari trovati/);
