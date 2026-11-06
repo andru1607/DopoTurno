@@ -4,6 +4,16 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.5 · Esperienza professionale e continuità su smartphone
+
+Migliorata l'usabilità delle simulazioni mantenendo i collaudi **Chromium già introdotti nelle versioni 2.4.1 e 2.4.2**: mappa prima delle decisioni su mobile, 44 CSS px per i controlli principali, attenzione al focus dopo ogni risposta, migliore leggibilità e ricerca che non interrompe la tastiera.
+
+**Una simulazione interrotta non viene più persa quando ne apri un'altra.** Ogni caso mantiene la propria bozza; il backup ne valida e ripristina gli stati conservando compatibilità con il vecchio formato. Dopo una decisione debole, l'esercizio mostra il metodo preferibile e la relativa motivazione. Il debriefing propone il passo utile successivo: riprovare, affrontare un altro caso dello stesso reparto o leggere il consiglio tecnico collegato.
+
+Test aggiuntivi: `node --test tests/mobile-accessibility-smoke.cjs`. La pipeline già presente esegue le suite di regressione e i controlli Chromium. **La verifica fisica su Safari/iPhone e la revisione professionale dei casi restano da completare**.
+
+[Protocollo di qualità e test manuali](docs/MOBILE_QA.md) · [Apri le simulazioni](https://dopoturno-academy-preview.vercel.app/#simulazioni).
+
 ## v2.4.2 · Correzione layout smartphone verificata con Chromium
 
 Il primo test browser della versione 2.4.1 ha individuato un problema reale di raggiungibilità delle stazioni della mappa, a volte coperte dalle barre di navigazione fisse. La 2.4.2 porta la **mappa prima delle scelte sui telefoni**, la mantiene di lato sui desktop, dà spazio alle barre e migliora lo scroll dei titoli per i lettori di schermo. Il controllo responsive ora verifica anche l'ordine visivo della mappa.

@@ -155,14 +155,14 @@ function diagram(ctx,c,r){
  +'<ol class="shift-map-list">'+c.places.map((place,i)=>'<li><strong>'+(i+1)+'</strong> '+ESC(place)+'</li>').join("")+'</ol>';
 }
 function decision(ctx,c,r){
- const b=c.steps[r.step],selected=r.choices[r.step],review=r.phase==="feedback",chosen=review?b.choices[selected]:null;
+ const b=c.steps[r.step],selected=r.choices[r.step],review=r.phase==="feedback",chosen=review?b.choices[selected]:null,best=b.choices.find(x=>x.kind==="strong");
  const before=r.step>0?c.steps[r.step-1].choices[r.choices[r.step-1]]:null;
  const branch=b.branches?(before?.kind==="strong"?b.branches.strong:b.branches.other):"";
  return '<section class="shift-decision"><div class="shift-meta"><span>DECISIONE '+(r.step+1)+' / 3</span><span>'+ESC(c.phase)+'</span></div><div class="shift-track"><span style="width:'+((r.step+1)/3*100)+'%"></span></div>'
  +(branch?'<div class="shift-branch"><strong>Come evolve la situazione</strong><p>'+ESC(branch)+'</p></div>':'')
  +'<p class="shift-setting">'+ESC(b.setting)+'</p><h2>'+ESC(b.question)+'</h2>'
  +'<div class="shift-choices" role="group" aria-label="Scegli come intervenire">'+b.choices.map((a,i)=>'<button type="button" data-action="shiftChoose" data-step="'+i+'" class="shift-choice'+(review&&selected===i?' selected':'')+'" aria-pressed="'+(review&&selected===i)+'" '+(review?'disabled':'')+'><span>'+String.fromCharCode(65+i)+'</span>'+ESC(a.label)+'</button>').join("")+'</div>'
- +(review?'<div role="status" class="shift-feedback '+(chosen.critical?"critical":chosen.kind)+'"><strong>'+(chosen.critical?"Rischio critico nella decisione":chosen.kind==="strong"?"Decisione solida":chosen.kind==="partial"?"Decisione incompleta":"Decisione da correggere")+'</strong><p>'+ESC(chosen.consequence)+'</p><p><strong>Motivazione.</strong> '+ESC(chosen.explanation)+'</p></div><button class="btn shift-next" data-action="shiftNext">'+(r.step===2?"Apri il debriefing":"Prosegui il servizio")+' →</button>':
+ +(review?'<div role="status" class="shift-feedback '+(chosen.critical?"critical":chosen.kind)+'"><strong>'+(chosen.critical?"Rischio critico nella decisione":chosen.kind==="strong"?"Decisione solida":chosen.kind==="partial"?"Decisione incompleta":"Decisione da correggere")+'</strong><p>'+ESC(chosen.consequence)+'</p><p><strong>Motivazione.</strong> '+ESC(chosen.explanation)+'</p>'+(chosen.kind!=="strong"?'<div class="shift-professional-alternative"><strong>Intervento preferibile:</strong> '+ESC(best.label)+'<span>'+ESC(best.explanation)+'</span></div>':'')+'</div><button class="btn shift-next" data-action="shiftNext">'+(r.step===2?"Apri il debriefing":"Prosegui il servizio")+' →</button>':
  '<p class="shift-neutral">La conseguenza comparirà dopo la tua decisione. Lo Skill Check diagnostico rimane una prova separata e senza aiuti.</p>')+'</section>';
 }
 function result(ctx,c,r){
@@ -170,10 +170,16 @@ function result(ctx,c,r){
  const tone=st.critical?"critical":st.strong===3?"strong":"partial";
  const heading=st.critical?"È emerso un rischio critico.":st.strong===3?"Tre decisioni coerenti.":"Ci sono scelte da perfezionare.";
  const detail=st.critical?"Il caso è stato svolto, ma almeno una decisione avrebbe richiesto un blocco o una verifica prima di proseguire.":st.strong===3?"Hai seguito un metodo verificabile in questo scenario. Non equivale a competenza pratica certificata.":"Rileggi i passaggi ed esamina il criterio operativo più solido prima di riprovare.";
+ const pool=CASES.filter(item=>item.role===c.role),nextCase=pool[(pool.findIndex(item=>item.id===c.id)+1)%pool.length];
+ const reviewTip=c.tips?.find(id=>window.DopoTurnoTips?.TIPS?.some(t=>t.id===id));
  return '<section class="shift-result"><span class="shift-eyebrow">DEBRIEFING FORMATIVO</span><h2>'+heading+'</h2><div class="shift-outcome '+tone+'"><p>'+detail+'</p></div>'
  +'<div class="shift-scores"><span><strong>'+st.strong+'</strong> decisioni solide</span><span><strong>'+st.partial+'</strong> parziali</span><span><strong>'+st.weak+'</strong> da correggere</span>'+(st.critical?'<span><strong>'+st.critical+'</strong> rischi critici</span>':'')+'</div>'
- +r.choices.map((idx,i)=>{const b=c.steps[i],chosen=b.choices[idx],best=b.choices.find(a=>a.kind==="strong");return '<div class="shift-recap"><small>PASSAGGIO '+(i+1)+'</small><h3>'+ESC(b.question)+'</h3><p><strong>La tua decisione:</strong> '+ESC(chosen.label)+'</p><p>'+ESC(chosen.consequence)+'</p><div><strong>Criterio da ricordare:</strong> '+ESC(best.explanation)+'</div></div>'}).join("")
- +'<div class="shift-principles"><h3>Da applicare al prossimo turno</h3><ol>'+c.debrief.map(x=>'<li>'+ESC(x)+'</li>').join("")+'</ol></div><div class="shift-actions"><button class="btn" data-action="shiftRetry">Riprova lo scenario</button><button class="btn outline" data-page="shiftSimList">Tutti gli scenari</button><button class="btn ghost" data-page="turnTips">Trucchi del turno</button></div><p class="shift-disclaimer">Esercitazione simulata, non attestazione professionale o formazione obbligatoria.</p></section>';
+ +r.choices.map((idx,i)=>{const b=c.steps[i],chosen=b.choices[idx],best=b.choices.find(a=>a.kind==="strong");return '<div class="shift-recap"><small>PASSAGGIO '+(i+1)+'</small><h3>'+ESC(b.question)+'</h3><p><strong>La tua decisione:</strong> '+ESC(chosen.label)+'</p><p>'+ESC(chosen.consequence)+'</p><div><strong>Intervento di riferimento:</strong> '+ESC(best.label)+'<p>'+ESC(best.explanation)+'</p></div></div>'}).join("")
+ +'<div class="shift-principles"><h3>Da applicare al prossimo turno</h3><ol>'+c.debrief.map(x=>'<li>'+ESC(x)+'</li>').join("")+'</ol></div><div class="shift-actions">'
+ +(st.critical||st.strong<3?'<button class="btn" data-action="shiftRetry">Rivedi e riprova</button>':'<button class="btn" data-action="shiftNextCase" data-id="'+nextCase.id+'">Prossimo caso di '+ESC(ROLES[c.role])+'</button>')
+ +(st.critical||st.strong<3?'<button class="btn outline" data-action="shiftNextCase" data-id="'+nextCase.id+'">Prossimo caso</button>':'<button class="btn outline" data-action="shiftRetry">Ripeti il caso</button>')
+ +(reviewTip?'<button class="btn ghost" data-action="shiftReviewTip" data-id="'+reviewTip+'">Approfondisci la tecnica</button>':'')
+ +'<button class="btn ghost" data-page="shiftSimList">Tutti gli scenari</button></div><p class="shift-disclaimer">Esercitazione simulata, non attestazione professionale o formazione obbligatoria.</p></section>';
 }
 function playPage(ctx){
  const c=lookup(ctx.state.shiftSimId),r=getRun(ctx);
@@ -193,6 +199,13 @@ function catalogPage(ctx){
 function action(ctx,key,el){
  const id=el?.dataset?.id,step=Number(el?.dataset?.step);
  if(key==="shiftOpen")return start(ctx,id);
+ if(key==="shiftNextCase"&&lookup(id)&&lookup(id).role===lookup(ctx.state.shiftSimId)?.role)return start(ctx,id);
+ if(key==="shiftReviewTip"){
+  const c=lookup(ctx.state.shiftSimId),tip=window.DopoTurnoTips?.TIPS?.find(t=>t.id===id&&c?.tips.includes(t.id));
+  if(!tip)return false;
+  ctx.state.turnTips={role:tip.role,stage:tip.stage,query:"",open:tip.id};
+  ctx.setPage("turnTips");return true;
+ }
  if(key==="shiftRetry")return start(ctx,ctx.state.shiftSimId,true);
  if(key==="shiftChoose")return choose(ctx,step);
  if(key==="shiftNext")return next(ctx);

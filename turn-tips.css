@@ -29,3 +29,9 @@
 .tips-entry .btn{min-height:39px}
 .tips-wrap button:focus-visible,.tips-wrap input:focus-visible{outline:3px solid #eec38f;outline-offset:3px}
 @media(max-width:600px){.tips-hero{border-radius:14px;padding:20px}.tips-controls{padding:14px}.tips-item-head{padding:14px}.tips-item-head strong{font-size:14px}.tips-details{padding:2px 14px 15px}.tips-filters button{font-size:11px;padding:9px 10px}}
+
+/* v2.5 · Controlli touch e ricerca che non provoca zoom in Safari. */
+.tips-controls input{min-height:46px;font-size:16px}
+.tips-filters button,.tips-sim-link,.tips-back button{min-height:44px}
+.tips-item-head{min-height:58px}
+.tips-wrap button{touch-action:manipulation}

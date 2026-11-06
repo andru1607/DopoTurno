@@ -144,3 +144,26 @@
  .shift-case-header{margin-bottom:8px}
  .shift-wrap{padding-bottom:calc(126px + env(safe-area-inset-bottom))}
 }
+
+/* v2.5 · Raffinamenti visivi senza perdere la mappa mobile già testata. */
+.shift-wrap{overflow-wrap:break-word}
+.shift-filters>input{min-height:46px;font-size:16px}
+.shift-choice{min-height:58px;font-size:14px;touch-action:manipulation}
+.shift-next,.shift-actions .btn,.shift-card .btn{min-height:46px}
+.shift-pin{min-width:44px;min-height:44px;touch-action:manipulation}
+.shift-pin b{width:42px;height:42px;font-size:13px}
+.shift-filter-row button,.shift-back button{min-height:44px;touch-action:manipulation}
+.shift-professional-alternative{margin-top:12px;padding:13px 14px;border:1px solid #b6dbca;background:#22493f;border-radius:9px;color:#e8fff5;font-size:12px;line-height:1.65}
+.shift-professional-alternative strong{display:block;color:#fff;margin-bottom:6px}
+.shift-professional-alternative span{display:block}
+.shift-recap>div p{color:#e1f4ec;font-size:12px;line-height:1.65;margin:6px 0 0}
+.shift-pin:focus-visible{outline:3px solid #f2c58f;outline-offset:4px}
+@media(max-width:640px){
+ .shift-choice{min-height:60px;font-size:14px;padding:14px}
+ .shift-filter-row{gap:8px}
+ .shift-filter-row button{padding:11px 13px}
+ .shift-back button{padding:11px 6px}
+ .shift-recap{overflow-wrap:anywhere}
+ .shift-map-list{font-size:11.5px;line-height:1.7}
+}
+@media(prefers-contrast:more){.shift-choice,.shift-pin b{border-width:2px}.shift-feedback{border-width:2px}}

@@ -124,3 +124,10 @@
  .micro-chapter-foot{justify-content:flex-start;gap:12px}
  .micro-chapter-foot .btn{min-height:44px}
 }
+
+/* v2.5 · Dimensioni del testo e campi su Safari iOS. */
+.micro-reading textarea{font-size:16px}
+.micro-step-chip{min-height:58px}
+.micro-bottom-actions .btn,.micro-back button{min-height:44px}
+.micro-mini-track{gap:6px}
+@media(max-width:650px){.micro-step-chip{min-height:60px;font-size:10px}}
