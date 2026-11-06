@@ -126,6 +126,36 @@ test('In-progress scenarios survive the saved draft; malformed imports are disca
  assert.equal(s.validDraft({id:'Z99',step:0,phase:'question',choices:[]}),null);
  assert.ok(read('academy-app.js').includes('SHIFT.importState(d)'));
 });
+test('Each scenario keeps its own unfinished progress, survives backup and restores legacy drafts',()=>{
+ const h=harness(),a=h.api,s=h.shift;
+ a.onAction('shiftOpen',{dataset:{id:'S01'}});
+ a.onAction('shiftChoose',{dataset:{step:'0'}});
+ assert.equal(a.saved.shiftSimDrafts.S01.phase,'feedback');
+ a.onAction('shiftOpen',{dataset:{id:'C02'}});
+ assert.equal(a.state.shiftSimRun.phase,'question');
+ a.onAction('shiftChoose',{dataset:{step:'2'}});
+ assert.equal(a.saved.shiftSimDrafts.C02.choices[0],2);
+ assert.equal(a.saved.shiftSimDrafts.S01.choices[0],0,'changing case must not erase previous draft');
+ a.setPage('shiftSimList');
+ assert.match(h.app.innerHTML,/data-case-id="S01"[\s\S]*?Riprendi/);
+ assert.match(h.app.innerHTML,/data-case-id="C02"[\s\S]*?Riprendi/);
+ a.onAction('shiftOpen',{dataset:{id:'S01'}});
+ assert.equal(a.state.shiftSimRun.phase,'feedback');
+ assert.equal(a.state.shiftSimRun.choices[0],0);
+ const backup=a.backupData();
+ assert.equal(Object.keys(backup.shiftSimDrafts).length,2);
+ const imported=s.importState(backup);
+ assert.deepEqual(Object.keys(imported.shiftSimDrafts).sort(),['C02','S01']);
+ const old=s.importState({shiftSimDraft:{id:'B01',step:0,phase:'feedback',choices:[1]}});
+ assert.equal(old.shiftSimDrafts.B01.choices[0],1,'old backups must still restore');
+ assert.deepEqual(Object.keys(s.importState({shiftSimDrafts:{S01:{id:'C02',step:0,phase:'feedback',choices:[0]},EVIL:{id:'EVIL',step:0,phase:'question',choices:[]}}}).shiftSimDrafts),[],'invalid or mis-keyed imported drafts must be discarded');
+ a.onAction('shiftRetry',{dataset:{}});
+ assert.equal(a.saved.shiftSimDrafts.S01,undefined);
+ assert.equal(a.saved.shiftSimDrafts.C02.choices[0],2,'restart must only reset selected case');
+ a.onAction('shiftOpen',{dataset:{id:'C02'}});
+ assert.equal(a.state.shiftSimRun.phase,'feedback');
+ assert.equal(a.state.shiftSimRun.choices[0],2);
+});
 test('All decision branches render, and inline executable scripts remain prohibited',()=>{
  const h=harness(),s=h.shift,a=h.api;
  let visited=0;

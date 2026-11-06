@@ -23,7 +23,11 @@ function validate(){
 validate();
 function ensure(saved){
  if(!saved.shiftSimResults||typeof saved.shiftSimResults!=="object"||Array.isArray(saved.shiftSimResults))saved.shiftSimResults={};
- if(!saved.shiftSimDraft||typeof saved.shiftSimDraft!=="object"||Array.isArray(saved.shiftSimDraft))saved.shiftSimDraft=null;
+ // Import old single-case drafts without deleting other unfinished scenarios.
+ const legacy=validDraft(saved.shiftSimDraft);
+ saved.shiftSimDrafts=validDrafts(saved.shiftSimDrafts);
+ if(legacy&&legacy.phase!=="finished"&&!saved.shiftSimDrafts[legacy.id])saved.shiftSimDrafts[legacy.id]=legacy;
+ saved.shiftSimDraft=legacy&&legacy.phase!=="finished"?legacy:null;
 }
 function validDraft(raw){
  if(!raw||!lookup(raw.id)||!Array.isArray(raw.choices)||raw.choices.length>3||!Number.isInteger(raw.step)||raw.step<0||raw.step>2||!["question","feedback","finished"].includes(raw.phase))return null;
@@ -48,19 +52,41 @@ function validResults(raw){
  }
  return out;
 }
-function importState(raw){return {shiftSimResults:validResults(raw?.shiftSimResults),shiftSimDraft:validDraft(raw?.shiftSimDraft)}}
+function validDrafts(raw){
+ const out={};
+ if(!raw||typeof raw!=="object"||Array.isArray(raw))return out;
+ for(const [id,value] of Object.entries(raw)){
+  if(!lookup(id))continue;
+  const draft=validDraft(value);
+  if(draft&&draft.id===id&&draft.phase!=="finished")out[id]=draft;
+ }
+ return out;
+}
+function importState(raw){
+ const drafts=validDrafts(raw?.shiftSimDrafts);
+ const legacy=validDraft(raw?.shiftSimDraft);
+ if(legacy&&legacy.phase!=="finished"&&!drafts[legacy.id])drafts[legacy.id]=legacy;
+ return {shiftSimResults:validResults(raw?.shiftSimResults),shiftSimDrafts:drafts,shiftSimDraft:legacy&&legacy.phase!=="finished"?legacy:null};
+}
 function getRun(ctx){
  ensure(ctx.saved);
  const id=ctx.state.shiftSimId;
  if(!lookup(id))return null;
  if(ctx.state.shiftSimRun?.id===id)return ctx.state.shiftSimRun;
- const saved=validDraft(ctx.saved.shiftSimDraft);
- const r=saved?.id===id?saved:{id,step:0,phase:"question",choices:[]};
+ const saved=validDraft(ctx.saved.shiftSimDrafts[id])||((ctx.saved.shiftSimDraft?.id===id)?validDraft(ctx.saved.shiftSimDraft):null);
+ const r=saved||{id,step:0,phase:"question",choices:[]};
  ctx.state.shiftSimRun=r;ctx.state.shiftInspect=null;return r;
 }
 function persist(ctx){
  const r=getRun(ctx);if(!r)return false;
- ctx.saved.shiftSimDraft=r.phase==="finished"?null:{id:r.id,step:r.step,phase:r.phase,choices:[...r.choices]};
+ if(r.phase==="finished"){
+  delete ctx.saved.shiftSimDrafts[r.id];
+  if(ctx.saved.shiftSimDraft?.id===r.id)ctx.saved.shiftSimDraft=null;
+ }else{
+  const draft={id:r.id,step:r.step,phase:r.phase,choices:[...r.choices]};
+  ctx.saved.shiftSimDrafts[r.id]=draft;
+  ctx.saved.shiftSimDraft=draft; // Legacy field for older local backups.
+ }
  if(!ctx.save()&&ctx.toast)ctx.toast("Il browser non ha salvato: verifica lo spazio disponibile.");return true;
 }
 /* The app redraws the current view after a choice. Move keyboard and VoiceOver
@@ -85,7 +111,11 @@ function focusControl(ctx,action,id){
 function start(ctx,id,reset=false){
  if(!lookup(id))return false;
  ensure(ctx.saved);
- if(reset||ctx.saved.shiftSimDraft?.id!==id)ctx.saved.shiftSimDraft=null;
+ if(reset){
+  delete ctx.saved.shiftSimDrafts[id];
+  if(ctx.saved.shiftSimDraft?.id===id)ctx.saved.shiftSimDraft=null;
+  if(!ctx.save()&&ctx.toast)ctx.toast("Il browser non ha salvato il riavvio dello scenario.");
+ }
  ctx.state.shiftSimId=id;ctx.state.shiftSimRun=null;ctx.state.shiftInspect=null;
  ctx.setPage("shiftSimRun",{shiftSimId:id});focusAfter(ctx,".shift-case-header h1","start");return true;
 }
@@ -99,7 +129,8 @@ function next(ctx){
  if(r.step<2){r.step++;r.phase="question";ctx.state.shiftInspect=null;persist(ctx);ctx.render();focusAfter(ctx,".shift-decision h2","start");return true;}
  r.phase="finished";
  ctx.saved.shiftSimResults[r.id]={choices:[...r.choices],finishedAt:new Date().toISOString(),...score(lookup(r.id),r.choices)};
- ctx.saved.shiftSimDraft=null;
+ delete ctx.saved.shiftSimDrafts[r.id];
+ if(ctx.saved.shiftSimDraft?.id===r.id)ctx.saved.shiftSimDraft=null;
  if(!ctx.save()&&ctx.toast)ctx.toast("Il risultato non è stato salvato sul dispositivo.");
  ctx.render();focusAfter(ctx,".shift-result h2","start");return true;
 }
@@ -157,7 +188,7 @@ function catalogPage(ctx){
  const count=Object.keys(validResults(ctx.saved.shiftSimResults)).length;
  return '<div class="shift-wrap"><div class="shift-back"><button data-page="academy">← Academy</button><button data-page="turnTips">Trucchi del turno</button></div><header class="shift-catalog-header"><span class="shift-eyebrow">DOPOTURNO / SIMULAZIONI FORMATIVE</span><h1>Dentro il servizio.</h1><p>18 casi di Sala, Cucina e Bar. Tre decisioni per caso, conseguenze visibili, schemi del reparto e debriefing professionale. Nessuna penalità per chi riprova.</p><div class="shift-numbers"><span><strong>18</strong> scenari</span><span><strong>54</strong> decisioni</span><span><strong>'+count+'</strong> già svolti</span></div></header>'
  +'<section class="shift-filters"><label for="shiftSearch">Cerca una situazione</label><input id="shiftSearch" type="search" maxlength="100" value="'+ESC(f.query||"")+'" placeholder="Allergeni, vassoio, pass, latte, gestione del pienone…"><div class="shift-filter-row">'+[["tutti","Tutti"],["sala","Sala"],["cucina","Cucina"],["bar","Bar"]].map(([id,name])=>'<button type="button" class="'+(f.role===id?"active":"")+'" data-action="shiftRole" data-id="'+id+'" aria-pressed="'+(f.role===id)+'">'+name+'</button>').join("")+'</div><div class="shift-filter-row">'+[["tutte","Tutte le fasi"],...PHASES.map(x=>[x,x])].map(([id,name])=>'<button type="button" class="'+(f.phase===id?"active":"")+'" data-action="shiftPhase" data-id="'+ESC(id)+'" aria-pressed="'+(f.phase===id)+'">'+ESC(name)+'</button>').join("")+'</div><p class="shift-count" role="status">'+visible.length+' scenari trovati</p></section>'
- +'<section class="shift-cards">'+(list.length?list.map(c=>{const done=ctx.saved.shiftSimResults[c.id],draft=ctx.saved.shiftSimDraft?.id===c.id,match=!q||[c.title,c.focus,c.opening,c.goal].join(" ").toLocaleLowerCase("it").includes(q);return '<article class="shift-card" data-case-id="'+c.id+'"'+(match?'':' hidden')+'><small>'+ESC(ROLES[c.role])+' · '+ESC(c.phase)+'</small><h2>'+ESC(c.title)+'</h2><p>'+ESC(c.focus)+'</p><div><span>'+(draft?"In corso":done?"Già svolto":"Tre scelte e debriefing")+'</span><button type="button" data-action="shiftOpen" data-id="'+c.id+'" class="btn outline small">'+(draft?"Riprendi":done?"Ripeti":"Inizia")+'</button></div></article>'}).join(""):'<div class="shift-empty">Nessuno scenario corrisponde a questi filtri.</div>')+'</section><p class="shift-disclaimer">Questi sono esercizi formativi, non test diagnostici. Le procedure aziendali e gli obblighi di sicurezza restano prioritari.</p></div>';
+ +'<section class="shift-cards">'+(list.length?list.map(c=>{const done=ctx.saved.shiftSimResults[c.id],draft=!!ctx.saved.shiftSimDrafts[c.id]||ctx.saved.shiftSimDraft?.id===c.id,match=!q||[c.title,c.focus,c.opening,c.goal].join(" ").toLocaleLowerCase("it").includes(q);return '<article class="shift-card" data-case-id="'+c.id+'"'+(match?'':' hidden')+'><small>'+ESC(ROLES[c.role])+' · '+ESC(c.phase)+'</small><h2>'+ESC(c.title)+'</h2><p>'+ESC(c.focus)+'</p><div><span>'+(draft?"In corso":done?"Già svolto":"Tre scelte e debriefing")+'</span><button type="button" data-action="shiftOpen" data-id="'+c.id+'" class="btn outline small">'+(draft?"Riprendi":done?"Ripeti":"Inizia")+'</button></div></article>'}).join(""):'<div class="shift-empty">Nessuno scenario corrisponde a questi filtri.</div>')+'</section><p class="shift-disclaimer">Questi sono esercizi formativi, non test diagnostici. Le procedure aziendali e gli obblighi di sicurezza restano prioritari.</p></div>';
 }
 function action(ctx,key,el){
  const id=el?.dataset?.id,step=Number(el?.dataset?.step);
@@ -193,5 +224,5 @@ function search(ctx,text){
  }
  ctx.render();return true;
 }
-window.DopoTurnoShift={CASES,validate,lookup,ensure,score,validDraft,validResults,importState,forTip,getRun,start,choose,next,playPage,catalogPage,action,search};
+window.DopoTurnoShift={CASES,validate,lookup,ensure,score,validDraft,validDrafts,validResults,importState,forTip,getRun,start,choose,next,playPage,catalogPage,action,search};
 })();
