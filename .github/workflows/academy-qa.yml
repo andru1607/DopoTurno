@@ -24,8 +24,8 @@ jobs:
       - name: Install Playwright
         run: npm install --no-save --no-audit --no-fund playwright@1.56.1
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Chromium and WebKit
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Start local static preview
         run: |
@@ -39,3 +39,6 @@ jobs:
 
       - name: Responsive browser and keyboard QA
         run: node tests/mobile-browser.e2e.cjs
+
+      - name: Academy journeys on Chromium and WebKit
+        run: node tests/academy-browser.e2e.cjs
