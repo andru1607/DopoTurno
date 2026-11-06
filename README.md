@@ -4,6 +4,10 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.4.2 · Correzione layout smartphone verificata con Chromium
+
+Il primo test browser della versione 2.4.1 ha individuato un problema reale di raggiungibilità delle stazioni della mappa, a volte coperte dalle barre di navigazione fisse. La 2.4.2 porta la **mappa prima delle scelte sui telefoni**, la mantiene di lato sui desktop, dà spazio alle barre e migliora lo scroll dei titoli per i lettori di schermo. Il controllo responsive ora verifica anche l'ordine visivo della mappa.
+
 ## v2.4.1 · Accessibilità mobile e controlli di qualità
 
 Interventi sul percorso delle simulazioni: **focus mantenuto tra scelta, feedback e debriefing**, target tattili da **44 px** per mappe e filtri, tappe delle microlezioni più facili da utilizzare e ricerca del catalogo senza ricostruzione della schermata a ogni carattere.

@@ -147,7 +147,7 @@ function result(ctx,c,r){
 function playPage(ctx){
  const c=lookup(ctx.state.shiftSimId),r=getRun(ctx);
  if(!c||!r)return '<div class="shift-wrap"><p>Simulazione non disponibile.</p><button data-page="shiftSimList">Torna agli scenari</button></div>';
- return '<div class="shift-wrap"><div class="shift-back"><button data-page="shiftSimList">← Tutte le simulazioni</button><button data-page="turnTips">Trucchi del turno</button></div><header class="shift-case-header"><span class="shift-eyebrow">'+ESC(ROLES[c.role])+' · '+ESC(c.phase)+'</span><h1>'+ESC(c.title)+'</h1><p>'+ESC(c.opening)+'</p><div class="shift-goal"><strong>Obiettivo:</strong> '+ESC(c.goal)+'</div></header><div class="shift-layout"><div>'+ (r.phase==="finished"?result(ctx,c,r):decision(ctx,c,r)) +'</div><aside class="shift-map-panel">'+diagram(ctx,c,r)+'</aside></div></div>';
+ return '<div class="shift-wrap"><div class="shift-back"><button data-page="shiftSimList">← Tutte le simulazioni</button><button data-page="turnTips">Trucchi del turno</button></div><header class="shift-case-header"><span class="shift-eyebrow">'+ESC(ROLES[c.role])+' · '+ESC(c.phase)+'</span><h1>'+ESC(c.title)+'</h1><p>'+ESC(c.opening)+'</p><div class="shift-goal"><strong>Obiettivo:</strong> '+ESC(c.goal)+'</div></header><div class="shift-layout"><aside class="shift-map-panel">'+diagram(ctx,c,r)+'</aside><div class="shift-play-container">'+ (r.phase==="finished"?result(ctx,c,r):decision(ctx,c,r)) +'</div></div></div>';
 }
 function catalogPage(ctx){
  ensure(ctx.saved);

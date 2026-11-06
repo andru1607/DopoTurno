@@ -35,6 +35,10 @@ async function run(){
    await page.locator('[data-action="shiftOpen"][data-id="S02"]').click();
    await page.locator('.shift-choice').first().waitFor();
    assert.equal(await page.locator('.shift-pin').count(),5,profile.name+' five map stations');
+   if(profile.width<=940){
+     const p=await page.evaluate(()=>({map:document.querySelector('.shift-map-panel').getBoundingClientRect().top,decision:document.querySelector('.shift-play-container').getBoundingClientRect().top}));
+     assert.ok(p.map<p.decision,profile.name+' mobile map should appear before decisions '+JSON.stringify(p));
+   }
    await assertNoOverflow(page,profile.name+' scenario');
    await assertTarget(page,'.shift-pin',44,profile.name+' map pins');
    await page.locator('.shift-pin').nth(2).click();

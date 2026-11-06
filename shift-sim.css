@@ -125,3 +125,22 @@
  .shift-catalog-header,.shift-case-header{min-width:0}
  .shift-choices,.shift-layout,.shift-map-panel{min-width:0}
 }
+
+/* v2.4.2: viewport QA found the fixed navigation could cover the map.
+   Map is first in the DOM. Desktop remains two columns; mobile shows map before choices. */
+.shift-layout{grid-template-areas:"play map"}
+.shift-play-container{grid-area:play;min-width:0}
+.shift-map-panel{grid-area:map;top:96px}
+.shift-wrap{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+.shift-case-header h1,.shift-decision h2,.shift-result h2,.shift-feedback{scroll-margin-top:94px;scroll-margin-bottom:102px}
+.shift-map,.shift-pin{scroll-margin-top:94px;scroll-margin-bottom:102px}
+@media(max-width:940px){
+ .shift-layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"map" "play"}
+ .shift-map-panel{position:static;width:100%;min-width:0;top:auto}
+ .shift-map{min-height:240px;max-height:380px;aspect-ratio:1.65}
+}
+@media(max-width:640px){
+ .shift-map{min-height:230px;aspect-ratio:1.55}
+ .shift-case-header{margin-bottom:8px}
+ .shift-wrap{padding-bottom:calc(126px + env(safe-area-inset-bottom))}
+}
