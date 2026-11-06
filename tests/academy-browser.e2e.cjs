@@ -26,6 +26,7 @@ async function run(){
   page.on('pageerror',error=>errors.push(error.message));
   const id=device.engine+'/'+device.name;
   try{
+   process.stdout.write('Testing '+id+'\n');
    await page.goto(BASE+'/#academy',{waitUntil:'load',timeout:35000});
    await page.locator('.academy-hub').waitFor({timeout:20000});
    assert.equal(await page.locator('.hub-course-card').count(),2,id+' two focused courses');
@@ -64,11 +65,17 @@ async function run(){
    await page.goto(BASE+'/#academy',{waitUntil:'domcontentloaded'});
    await page.locator('.academy-hub').waitFor();
    await page.evaluate(()=>localStorage.setItem('dt_design_preview_v1',JSON.stringify({done:'bad',assessments:{},notes:12,activeCourse:'bad'})));
-   await page.reload({waitUntil:'domcontentloaded'});
-   await page.locator('.academy-hub').waitFor();
-   assert.equal(await page.locator('.hub-role-tabs [data-id="sala"]').getAttribute('aria-pressed'),'true',id+' recovered invalid data');
-   await page.goto(BASE+'/#%broken-link',{waitUntil:'domcontentloaded'});
-   await page.locator('.academy-hub').waitFor();
+   // A fresh tab is closer to a normal cold start and releases the previous
+   // journey's heavy lesson images before testing damaged persistent storage.
+   await page.close();
+   const recovery=await context.newPage();
+   recovery.on('pageerror',error=>errors.push(error.message));
+   await recovery.goto(BASE+'/#academy',{waitUntil:'domcontentloaded'});
+   await recovery.locator('.academy-hub').waitFor();
+   assert.equal(await recovery.locator('.hub-role-tabs [data-id="sala"]').getAttribute('aria-pressed'),'true',id+' recovered invalid data');
+   await recovery.goto(BASE+'/#%broken-link',{waitUntil:'domcontentloaded'});
+   await recovery.locator('.academy-hub').waitFor();
+   await recovery.close();
    assert.deepEqual(errors,[],id+' no JS exceptions');
    report.push({browser:device.engine,viewport:device.name,layout:true,modules:true,lessonResume:true,storageRecovery:true});
   }finally{await context.close();await browser.close();}
