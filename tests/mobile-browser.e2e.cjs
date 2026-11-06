@@ -59,6 +59,24 @@ async function run(){
    assert.equal(await page.evaluate(()=>document.activeElement?.matches('.shift-result h2')),true,profile.name+' debrief focus');
    await assertNoOverflow(page,profile.name+' debrief');
    assert.ok((await page.locator('.shift-result').innerText()).includes('Debriefing')||(await page.locator('.shift-result').innerText()).includes('Rileggi'),profile.name+' result copy');
+   if(profile.width===390){
+    // Regress Safari-like navigation: two unfinished cases must both survive reload.
+    await page.locator('[data-action="shiftRetry"]').click();
+    await page.locator('.shift-choice').first().click();
+    await page.locator('.shift-back [data-page="shiftSimList"]').click();
+    await page.locator('[data-action="shiftOpen"][data-id="C02"]').click();
+    await page.locator('.shift-choice').nth(2).click();
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.locator('.shift-feedback').waitFor();
+    await page.locator('.shift-back [data-page="shiftSimList"]').click();
+    const first=page.locator('.shift-card[data-case-id="S02"]');
+    const second=page.locator('.shift-card[data-case-id="C02"]');
+    assert.match(await first.innerText(),/Riprendi/,profile.name+' first saved draft');
+    assert.match(await second.innerText(),/Riprendi/,profile.name+' second saved draft');
+    await first.locator('[data-action="shiftOpen"]').click();
+    await page.locator('.shift-feedback').waitFor();
+    assert.ok(await page.locator('.shift-choice.selected').count()===1,profile.name+' first choice restored');
+   }
    assert.deepEqual(errors,[],profile.name+' console exceptions');
    report.push({viewport:profile.name,width:profile.width,overflow:false,focus:true,pins:5,search:true});
    await context.close();
