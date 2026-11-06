@@ -137,8 +137,8 @@ test('Each scenario keeps its own unfinished progress, survives backup and resto
  assert.equal(a.saved.shiftSimDrafts.C02.choices[0],2);
  assert.equal(a.saved.shiftSimDrafts.S01.choices[0],0,'changing case must not erase previous draft');
  a.setPage('shiftSimList');
- assert.match(h.app.innerHTML,/data-case-id="S01"[\\s\\S]*?Riprendi/);
- assert.match(h.app.innerHTML,/data-case-id="C02"[\\s\\S]*?Riprendi/);
+ assert.match(h.app.innerHTML,/data-case-id="S01"[\s\S]*?Riprendi/);
+ assert.match(h.app.innerHTML,/data-case-id="C02"[\s\S]*?Riprendi/);
  a.onAction('shiftOpen',{dataset:{id:'S01'}});
  assert.equal(a.state.shiftSimRun.phase,'feedback');
  assert.equal(a.state.shiftSimRun.choices[0],0);
