@@ -99,3 +99,5 @@
  .hub-course-card h3{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){.hub-meter>span{transition:none!important}}
+
+.micro-module .micro-chapter-list[hidden]{display:none!important}
