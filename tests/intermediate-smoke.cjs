@@ -3,7 +3,7 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),read=x=>fs.readFileSync(path.join(root,x),'utf8');
-const files=['intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js'];
+const files=['intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js'];
 function engine(){
  const sandbox={window:{}};vm.createContext(sandbox);
  for(const f of files)vm.runInContext(read(f),sandbox,{filename:f,timeout:5000});
@@ -78,7 +78,7 @@ test('Course references, deep links and privacy backups remain connected',()=>{
  assert.match(app,/SAL-I/);
  assert.match(app,/cucina-intermedio/);
  assert.match(app,/clean\.placements/);
- assert.match(app,/courseData\(e\.courseId\)\.title/);
+ assert.match(app,/LEDGER\.fromExam\(e,r,c\)/);
  assert.match(app,/nessun feedback durante la prova/i);
  for(const src of files)assert.ok(html.includes(src),src);
  assert.doesNotMatch(html,/<script>(?:.|\n)*?<\/script>/);

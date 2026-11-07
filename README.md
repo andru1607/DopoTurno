@@ -4,6 +4,16 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.6 · Progressi, verifiche e recupero affidabile dei dati
+
+Nuova sezione Progressi organizzata per reparto: **Sala, Cucina e Bar**, ciascuno con i corsi Fondamenti e Intermedio. Mostra microattività completate, moduli da approfondire, ripassi disponibili e uno **storico privato delle prove**. Dalla consegna di ogni Skill Check o verifica viene conservato soltanto un riepilogo validato (punteggio, errori critici, esiti dei moduli); le risposte delle prove concluse non sono salvate nello storico e nessun risultato costituisce una competenza professionale certificata.
+
+I **backup volontari** ora possono includere una prova sospesa recente, riportando posizione e risposte ma senza esportare domande, testi delle soluzioni o chiavi di correzione. Importando un backup, le domande vengono ricostruite esclusivamente dalla banca dati interna; bozze scadute, alterate o incongruenti vengono scartate. I formati legacy di progressi e risultati vengono interpretati in modo conservativo.
+
+Aggiunti controlli automatici dedicati per valutazioni, dati malformati, recupero degli esami e test cross-browser Chromium/WebKit. La preview resta **offline-first e locale**: non ha account veri, sincronizzazione tra dispositivi o attestati. Un backend dedicato a DopoTurno andrà progettato e validato prima dell'apertura pubblica multiutente.
+
+[Accedi ai progressi](https://dopoturno-academy-preview.vercel.app/#progress) · [Criteri di qualità](docs/ACADEMY_QA_251.md).
+
 ## v2.5 · Esperienza professionale e continuità su smartphone
 
 Migliorata l'usabilità delle simulazioni mantenendo i collaudi **Chromium già introdotti nelle versioni 2.4.1 e 2.4.2**: mappa prima delle decisioni su mobile, 44 CSS px per i controlli principali, attenzione al focus dopo ogni risposta, migliore leggibilità e ricerca che non interrompe la tastiera.

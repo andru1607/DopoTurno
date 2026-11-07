@@ -7,7 +7,7 @@ const files=[
  'academy-sala-data.js','academy-extra-data.js','intermediate-course-builder.js',
  'intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js',
  'learning-path.js','microlearning.js','turn-tips.js',
- 'shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js'
+ 'shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js'
 ];
 function boot(){
  const root={innerHTML:''},store={},focus=[],scroll=[];
