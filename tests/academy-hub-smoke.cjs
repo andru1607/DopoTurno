@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const files=['academy-sala-data.js','academy-extra-data.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js'];
+const files=['academy-sala-data.js','academy-extra-data.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js'];
 function setup(data={},hash='#academy'){
  const app={innerHTML:''},storage={dt_design_preview_v1:JSON.stringify(data)},handlers={};
  const dom={
