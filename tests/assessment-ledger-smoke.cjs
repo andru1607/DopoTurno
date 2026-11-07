@@ -53,7 +53,7 @@ test('Submitting a Skill Check stores only a compact module analysis and remains
  assert.equal(record.percent,100);
  assert.equal(record.passed,true);
  assert.ok(record.modules.length>=4);
- assert.equal(record.modules.reduce((n,m)=>n+m.total,0),16);
+ assert.equal(record.modules.reduce((n,m)=>n+m.total,0),20);
  assert.equal(Object.hasOwn(record,'answers'),false);
  assert.equal(a.saved.examDraft,null);
  a.onAction('progressRole',{dataset:{id:'sala'}});
