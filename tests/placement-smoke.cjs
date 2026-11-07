@@ -86,7 +86,8 @@ test('Malformed, unrelated or incomplete stored placements are rejected',()=>{
 test('Diagnostic feedback is only integrated into results and course paths, not testRun',()=>{
  const app=load('academy-app.js'),html=load('index.html');
  assert.doesNotThrow(()=>new vm.Script(app,{filename:'academy-app.js'}));
- assert.match(app,/e\.type==='skill'.*PLACEMENT\.build/);
+ assert.match(app,/if\(e\.type==="skill"\)/);
+ assert.match(app,/PLACEMENT\.build\(c\.id,c,r\.grades/);
  assert.match(app,/e\.type==="skill"\?placementPanel/);
  assert.match(app,/function placementFor/);
  assert.match(app,/recommendedLessonId/);
