@@ -22,7 +22,7 @@ test('HTML does not contain inline executable code',()=>{
   assert.equal((page.match(/<script\b[^>]*\bsrc=/gi)||[]).length,16);
   assert.doesNotMatch(page,/<style[\s>]/i);
   assert.doesNotMatch(page,/\son[a-z]+\s*=/i);
-  for(const name of ['academy-app.js','academy-sala-data.js','academy-extra-data.js','academy-assets.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js'])assert.ok(page.includes(name),name);
+  for(const name of ['academy-app.js','academy-sala-data.js','academy-extra-data.js','academy-assets.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js'])assert.ok(page.includes(name),name);
 });
 
 test('strict script CSP and isolation headers',()=>{
@@ -36,7 +36,7 @@ test('strict script CSP and isolation headers',()=>{
 });
 
 test('all application scripts can be parsed',()=>{
-  for(const name of ['academy-assets.js','academy-sala-data.js','academy-extra-data.js','academy-app.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js'])assert.doesNotThrow(()=>new vm.Script(read(name),{filename:name}));
+  for(const name of ['academy-assets.js','academy-sala-data.js','academy-extra-data.js','academy-app.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js'])assert.doesNotThrow(()=>new vm.Script(read(name),{filename:name}));
 });
 
 test('forum recognizes common accidental identifiers',()=>{
