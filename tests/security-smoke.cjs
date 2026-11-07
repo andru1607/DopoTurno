@@ -18,8 +18,8 @@ function forum(){
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 test('HTML does not contain inline executable code',()=>{
-  assert.equal((page.match(/<script\b/gi)||[]).length,16);
-  assert.equal((page.match(/<script\b[^>]*\bsrc=/gi)||[]).length,16);
+  assert.equal((page.match(/<script\b/gi)||[]).length,18);
+  assert.equal((page.match(/<script\b[^>]*\bsrc=/gi)||[]).length,18);
   assert.doesNotMatch(page,/<style[\s>]/i);
   assert.doesNotMatch(page,/\son[a-z]+\s*=/i);
   for(const name of ['academy-app.js','academy-sala-data.js','academy-extra-data.js','academy-assets.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js'])assert.ok(page.includes(name),name);
