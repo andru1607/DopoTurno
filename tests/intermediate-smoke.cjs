@@ -78,7 +78,7 @@ test('Course references, deep links and privacy backups remain connected',()=>{
  assert.match(app,/SAL-I/);
  assert.match(app,/cucina-intermedio/);
  assert.match(app,/clean\.placements/);
- assert.match(app,/courseData\(e\.courseId\)\.title/);
+ assert.match(app,/LEDGER\.fromExam\(e,r,c\)/);
  assert.match(app,/nessun feedback durante la prova/i);
  for(const src of files)assert.ok(html.includes(src),src);
  assert.doesNotMatch(html,/<script>(?:.|\n)*?<\/script>/);
