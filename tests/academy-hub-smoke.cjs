@@ -19,18 +19,32 @@ function setup(data={},hash='#academy'){
  vm.runInContext(src.replace(tail,'window.TEST={state,saved,render,onAction,readRoute,backupData,courseData};render();\n})();'),dom,{filename:'academy-app.js',timeout:9000});
  return {app,dom,storage,api:dom.window.TEST};
 }
-test('Academy homepage exposes one clear next step, three roles and concise learning navigation',()=>{
+test('Studio navigation gives five clear destinations and preserves Community and Career',()=>{
+ const h=setup({},'#home');
+ assert.equal(h.api.state.page,'home');
+ assert.match(h.app.innerHTML,/La tua attività/);
+ assert.equal((h.app.innerHTML.match(/class="studio-stat"/g)||[]).length,3);
+ assert.equal((h.app.innerHTML.match(/class="bottom-nav"/g)||[]).length,1);
+ for(const page of ['home','academy','shiftSimList','progress','profile'])assert.ok(h.app.innerHTML.includes('data-page="'+page+'"'),page);
+ h.api.onAction('community',{dataset:{}});
+ assert.equal(h.api.state.page,'community');
+ assert.match(h.app.innerHTML,/Anteprima privata della Community/);
+ assert.match(h.app.innerHTML,/data-page="confronti"/);
+ assert.match(h.app.innerHTML,/data-page="career"/);
+});
+test('Studio Academy has three roles, two levels, four module links and a single next action',()=>{
  const h=setup();
  assert.equal(h.api.state.page,'academy');
- assert.match(h.app.innerHTML,/La tua formazione, senza confusione/);
- assert.match(h.app.innerHTML,/Da dove vuoi continuare/);
+ assert.match(h.app.innerHTML,/Il tuo percorso di studio/);
+ assert.match(h.app.innerHTML,/Scegli il percorso/);
  assert.equal((h.app.innerHTML.match(/data-action="academyRole"/g)||[]).length,3);
- assert.equal((h.app.innerHTML.match(/class="hub-course-card"/g)||[]).length,2);
- for(const text of ['Skill Check','Simulazioni','Progressi','Trucchi del turno','Una competenza alla volta'])assert.ok(h.app.innerHTML.includes(text),text);
+ assert.equal((h.app.innerHTML.match(/class="hub-course-card(?: selected)?"/g)||[]).length,2);
+ assert.equal((h.app.innerHTML.match(/class="studio-module"/g)||[]).length,4);
+ for(const label of ['Skill Check','Simulazioni','Trucchi del turno','Ripassi'])assert.ok(h.app.innerHTML.includes(label),label);
  assert.match(h.app.innerHTML,/data-page="academy" aria-current="page"/);
  assert.match(h.app.innerHTML,/I progressi rimangono nel browser/);
 });
-test('Role tabs switch course, diagnostic and recommendation together',()=>{
+test('Role and level selector switches course without losing access to foundations',()=>{
  const h=setup();
  for(const role of ['cucina','bar','sala']){
   h.api.onAction('academyRole',{dataset:{id:role}});
@@ -38,10 +52,24 @@ test('Role tabs switch course, diagnostic and recommendation together',()=>{
   assert.equal(h.api.saved.activeCourse,role);
   assert.match(h.app.innerHTML,new RegExp('data-id="'+role+'" aria-pressed="true"'));
   assert.match(h.app.innerHTML,new RegExp('data-id="'+role+'-intermedio"'));
-  assert.equal((h.app.innerHTML.match(/class="hub-course-card"/g)||[]).length,2);
+  assert.equal((h.app.innerHTML.match(/class="hub-course-card(?: selected)?"/g)||[]).length,2);
+  h.api.onAction('academyLevel',{dataset:{id:role+'-intermedio'}});
+  assert.equal(h.api.state.activeCourse,role+'-intermedio');
+  assert.match(h.app.innerHTML,/Percorso selezionato/);
  }
  h.api.onAction('academyRole',{dataset:{id:'nonsense'}});
- assert.equal(h.api.state.activeCourse,'sala');
+ assert.equal(h.api.state.activeCourse,'sala-intermedio');
+});
+test('Module link opens the correct one of the four curriculum accordions',()=>{
+ const h=setup();
+ const course='bar-intermedio',mod=h.api.courseData(course).modules[2].id;
+ h.api.onAction('academyLevel',{dataset:{id:course}});
+ h.api.onAction('studioOpenModule',{dataset:{id:mod,course}});
+ assert.equal(h.api.state.page,'microCourse');
+ assert.equal(h.api.state.activeCourse,course);
+ assert.equal(h.api.state.microModuleOpen[course],mod);
+ assert.match(h.app.innerHTML,new RegExp('data-id="'+mod+'" aria-expanded="true" aria-controls="micro-module-'+mod+'"'));
+ assert.equal((h.app.innerHTML.match(/class="micro-chapter"/g)||[]).length,3);
 });
 test('The course program has four usable accordions with only one module expanded',()=>{
  const h=setup();
@@ -78,5 +106,5 @@ test('Damaged browser storage and malformed URL hash cannot break the Academy',(
  assert.equal(h.api.saved.assessments.length,0);
  assert.equal(typeof h.api.saved.notes,'object');
  assert.equal(h.api.saved.readingSize,'medium');
- assert.match(h.app.innerHTML,/Da dove vuoi continuare/);
+ assert.match(h.app.innerHTML,/Il tuo percorso di studio/);
 });
