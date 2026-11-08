@@ -4,6 +4,18 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.7 · DopoTurno Studio: redesign strutturale
+
+Scelta applicata: **Versione B, Studio** (grafite, blu ardesia, ambra) con layout professionale e controlli mobile-first.
+
+- **Home** è una dashboard personale: attività, verifiche, simulazioni, pulsante di ripresa e ripassi. La vecchia Home social resta disponibile come **Community** nella navigazione secondaria; post e dati esistenti non vengono eliminati.
+- **Academy** separa selezione del reparto, livello (Fondamenti o Intermedio), quattro moduli reali e strumenti. Ogni modulo apre direttamente il proprio elenco di lezioni e mantiene tutti i contenuti disponibili.
+- **Progressi** distinguono studio e risultati del test. Il riquadro di analisi mostra le sole risposte teoriche per modulo; se non esistono dati non inventa competenze o percentuali. La cronologia è sintetica inizialmente, con espansione volontaria.
+- **Navigazione**: cinque sezioni principali coerenti su desktop e mobile: Home, Academy, Simulazioni, Progressi, Profilo. Community, Confronti e Carriera restano raggiungibili dalla sidebar e dalla Home; Codex, Ripassi, consigli e Skill Check rimangono dentro Academy.
+- Stili CSS centralizzati in `studio-ui.css`, test di navigazione e regressione in Chromium/WebKit per Home, Academy e Progressi.
+
+Nessun account o database reale è stato aggiunto; i dati rimangono sul dispositivo e non si rilascia alcuna certificazione.
+
 ## v2.6 · Progressi, verifiche e recupero affidabile dei dati
 
 Nuova sezione Progressi organizzata per reparto: **Sala, Cucina e Bar**, ciascuno con i corsi Fondamenti e Intermedio. Mostra microattività completate, moduli da approfondire, ripassi disponibili e uno **storico privato delle prove**. Dalla consegna di ogni Skill Check o verifica viene conservato soltanto un riepilogo validato (punteggio, errori critici, esiti dei moduli); le risposte delle prove concluse non sono salvate nello storico e nessun risultato costituisce una competenza professionale certificata.
