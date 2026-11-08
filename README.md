@@ -4,6 +4,18 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.8 · Community e curriculum finalmente visibili
+
+Correzione della navigazione Studio 2.7: **Community, Confronti e Curriculum non sono più collegamenti secondari difficili da trovare**.
+
+- Barra mobile: **Home · Academy · Community · CV · Altro**. In **Altro** rimangono immediatamente raggiungibili Simulazioni, Progressi, Confronti, Profilo, Carriera e ricerca.
+- Desktop: tre gruppi separati nella sidebar: Formazione, Community (messaggi/commenti e confronti), Professione (curriculum, opportunità, profilo).
+- Community: navigazione interna **Messaggi e commenti / Confronti professionali**, con accesso alla creazione di un post e alle discussioni esistenti.
+- Il CV si apre direttamente sull'**editor** tramite l'URL `#curriculum`, non sull'elenco di professionisti. Il Profilo e la Home mostrano un collegamento esplicito per modificarlo; resta possibile consultare gli esempi di offerte e professionisti nella sezione Carriera.
+- Nessun dato viene cancellato: bozze e post, confronti, CV, progressi e backup locali utilizzano lo stesso formato. Sono state estese le verifiche automatiche su Chromium/WebKit e gli smoke test delle nuove rotte.
+
+**Nota importante:** i messaggi e i commenti della Community rimangono dimostrativi e privati sul dispositivo. Non esiste ancora invio tra utenti reali, moderazione online o visibilità del CV presso datori di lavoro. La condivisione futura del CV richiederà un'autorizzazione esplicita e verificabile.
+
 ## v2.7 · DopoTurno Studio: redesign strutturale
 
 Scelta applicata: **Versione B, Studio** (grafite, blu ardesia, ambra) con layout professionale e controlli mobile-first.

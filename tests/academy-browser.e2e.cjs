@@ -33,6 +33,36 @@ async function run(){
    assert.equal(await page.locator('.bottom-nav [data-page]').count(),5,id+' five mobile destinations');
    await checkTargets(page,'.studio-shortcuts button',44,id+' home shortcuts');
    await checkOverflow(page,id+' home');
+
+   const communityNav=device.width<700?'.bottom-nav [data-page="community"]':'.sidebar [data-page="community"]';
+   await page.locator(communityNav).click();
+   await page.locator('.studio-community-nav').waitFor();
+   assert.match(await page.locator('.page-header').innerText(),/LA COMMUNITY/);
+   assert.equal(await page.locator('.studio-community-nav button').count(),2,id+' two social sections');
+   await checkTargets(page,'.studio-community-nav button',44,id+' social tabs');
+   await checkOverflow(page,id+' community');
+   await page.locator('.studio-community-nav [data-page="confronti"]').click();
+   await page.locator('.studio-community-nav [data-page="community"]').waitFor();
+   assert.equal(await page.locator('.studio-community-nav [aria-current="page"]').getAttribute('data-page'),'confronti');
+   await checkOverflow(page,id+' discussions');
+   const cvNav=device.width<700?'.bottom-nav [data-page="curriculum"]':'.sidebar [data-page="curriculum"]';
+   await page.locator(cvNav).click();
+   await page.locator('.cv-editor-grid').waitFor();
+   assert.match(await page.locator('.page-header').innerText(),/IL TUO CURRICULUM/);
+   assert.equal(await page.locator('.career-tab[aria-selected="true"]').getAttribute('data-id'),'cv');
+   await checkTargets(page,'.career-tab',44,id+' career tabs');
+   await page.locator('[data-cv="cvName"]').fill('Persona Test');
+   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('dt_design_preview_v1')).cvName),'Persona Test',id+' private CV saved');
+   await checkOverflow(page,id+' curriculum');
+   if(device.width<700)await page.locator('.bottom-nav [data-page="menu"]').click();
+   else await page.goto(BASE+'/#menu',{waitUntil:'domcontentloaded'});
+   await page.locator('.studio-menu-grid').waitFor();
+   assert.equal(await page.locator('.studio-menu-link').count(),6,id+' other sections reachable');
+   await checkTargets(page,'.studio-menu-link',44,id+' menu destinations');
+   await checkOverflow(page,id+' menu');
+   await page.locator('.studio-menu-link[data-page="progress"]').click();
+   await page.locator('.studio-progress').waitFor();
+
    await page.goto(BASE+'/#progress',{waitUntil:'domcontentloaded'});
    await page.locator('.studio-progress').waitFor();
    assert.equal(await page.locator('.progress-course-card').count(),2,id+' foundation and intermediate summaries');

@@ -32,6 +32,52 @@ test('Studio navigation gives five clear destinations and preserves Community an
  assert.match(h.app.innerHTML,/data-page="confronti"/);
  assert.match(h.app.innerHTML,/data-page="career"/);
 });
+test('Community and professional discussions have visible paired tabs, including on mobile',()=>{
+ const h=setup({},'#community');
+ assert.equal(h.api.state.page,'community');
+ assert.match(h.app.innerHTML,/Messaggi e commenti/);
+ assert.match(h.app.innerHTML,/Confronti professionali/);
+ assert.match(h.app.innerHTML,/Scrivi un post/);
+ assert.match(h.app.innerHTML,/data-page="community" aria-current="page"/);
+ assert.match(h.app.innerHTML,/data-page="confronti"/);
+ const bar=h.app.innerHTML.match(/<nav class="bottom-nav"[\s\S]*?<\/nav>/)?.[0]||'';
+ assert.match(bar,/data-page="community"/);
+ assert.match(bar,/data-page="curriculum"/);
+ assert.match(bar,/data-page="menu"/);
+});
+test('Curriculum opens its actual private editor instead of the people directory',()=>{
+ const h=setup({cvName:'Persona Test',cvTitle:'Cameriere',cvSkills:'Accoglienza'},'#curriculum');
+ assert.equal(h.api.state.page,'curriculum');
+ assert.equal(h.api.state.careerTab,'cv');
+ assert.match(h.app.innerHTML,/EDITOR DEL CURRICULUM/);
+ assert.match(h.app.innerHTML,/Persona Test/);
+ assert.match(h.app.innerHTML,/Cameriere/);
+ assert.match(h.app.innerHTML,/Stampa \/ Salva PDF/);
+ assert.match(h.app.innerHTML,/Simula la presenza nella directory/);
+ assert.match(h.app.innerHTML,/non sono pubblicati online|non pubblica davvero/i);
+ const exportData=h.api.backupData();
+ assert.equal(exportData.cvName,'Persona Test');
+ h.api.onAction('careerTab',{dataset:{id:'jobs'}});
+ assert.equal(h.api.state.page,'career');
+ assert.equal(h.api.state.careerTab,'jobs');
+ assert.match(h.app.innerHTML,/ANNUNCI DIMOSTRATIVI/);
+ h.api.onAction('careerTab',{dataset:{id:'cv'}});
+ assert.equal(h.api.state.page,'curriculum');
+ assert.match(h.app.innerHTML,/EDITOR DEL CURRICULUM/);
+});
+test('More menu preserves one-tap access to simulations, progress, Forum and profile',()=>{
+ const h=setup({},'#menu');
+ assert.equal(h.api.state.page,'menu');
+ for(const p of ['shiftSimList','progress','confronti','profile','career','discover']){
+  assert.match(h.app.innerHTML,new RegExp('data-page="'+p+'"'));
+ }
+ assert.equal((h.app.innerHTML.match(/class="studio-menu-link"/g)||[]).length,6);
+ h.api.onAction('progress',{dataset:{}});
+ assert.equal(h.api.state.page,'progress');
+ assert.match(h.app.innerHTML,/Analisi del percorso/);
+ h.api.onAction('profile',{dataset:{}});
+ assert.match(h.app.innerHTML,/Apri e modifica il curriculum/);
+});
 test('Studio Academy has three roles, two levels, four module links and a single next action',()=>{
  const h=setup();
  assert.equal(h.api.state.page,'academy');
