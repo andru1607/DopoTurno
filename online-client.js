@@ -104,7 +104,7 @@
   if(name==='cloudCompose'){data.composer=!data.composer;render();return}
   if(name==='cloudReplyToggle'){data.replyTo=data.replyTo===el.dataset.id?null:el.dataset.id;render();return}
   if(data.busy)return;
-  data.busy=true;data.error='';render();
+  data.busy=true;data.error='';
   try{
    if(name==='cloudSubmitAuth'){
     const email=ctx.document.getElementById('cloudEmail')?.value||'';
