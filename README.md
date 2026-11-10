@@ -4,6 +4,20 @@ Applicazione dimostrativa mobile-first per le persone che lavorano o si formano 
 
 **Anteprima iPhone e desktop:** https://dopoturno-academy-preview.vercel.app
 
+## v2.9 · Fondazione multiutente predisposta (online non ancora attivo)
+
+L'app mantiene **la demo locale sempre utilizzabile**. In parallelo è pronto il codice per un futuro backend esclusivo di DopoTurno: account con email confermata, messaggi e confronti visibili agli iscritti, salvataggio esplicito dei progressi e CV privato con autorizzazione ad email precisa, scadenza 7/30/90 giorni e revoca.
+
+- API Vercel Web Functions: /api/status, /api/auth, /api/community, /api/progress e /api/cv.
+- Sessioni protette con cookie HttpOnly, Secure, SameSite=Lax; niente chiavi segrete o token accessibili al frontend. Nessun accesso ai dati online senza una sessione.
+- Schema SQL separato in db/dopoturno_online_schema.sql con Row Level Security attivo su ogni tabella e regole per dati formativi, social e concessioni CV.
+- Nessuna pubblicazione automatica di conversazioni o curriculum locali. Backup formativi caricati soltanto dietro richiesta confermata.
+- Se un backend non è configurato l'app **non mostra una finta registrazione**: rimane in modalità locale ed esplicita il limite.
+
+**Importante:** non è stato creato né collegato un nuovo progetto Supabase perché serve scegliere l'organizzazione di destinazione e verificare i costi; il progetto Nexo/SINDRU non sarà riutilizzato. La parte online non è operativa tra utenti reali nella preview corrente. Restano necessari il deployment di un database dedicato, test RLS con due utenti verificati, moderazione, rate limiting e documentazione privacy prima dell'apertura al pubblico.
+
+Per la checklist completa: docs/ONLINE_ACTIVATION.md.
+
 ## v2.8 · Community e curriculum finalmente visibili
 
 Correzione della navigazione Studio 2.7: **Community, Confronti e Curriculum non sono più collegamenti secondari difficili da trovare**.
