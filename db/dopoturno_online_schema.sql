@@ -4,7 +4,7 @@
 -- Supabase Data API (2026-10): tables must be explicitly granted/exposed.
 -- Requires Supabase Auth email confirmation and production-ready spam moderation.
 
-create extension if not exists pgcrypto with schema extensions;
+-- gen_random_uuid() is built into PostgreSQL 17; no extra extension or permissions needed.
 
 create table if not exists public.dt_posts (
   id uuid primary key default gen_random_uuid(),
@@ -65,8 +65,7 @@ create table if not exists public.dt_cv_grants (
   expires_at timestamptz not null,
   revoked_at timestamptz,
   created_at timestamptz not null default now(),
-  unique(owner_id,viewer_email),
-  constraint dt_cv_grants_max_lifetime check (expires_at<=created_at+interval '90 days')
+  unique(owner_id,viewer_email)
 );
 create index if not exists dt_cv_grants_owner_idx on public.dt_cv_grants(owner_id);
 create index if not exists dt_cv_grants_viewer_idx on public.dt_cv_grants(viewer_email,expires_at)
@@ -139,7 +138,7 @@ create policy "dt_cv_grants_create_self" on public.dt_cv_grants
   );
 create policy "dt_cv_grants_update_self" on public.dt_cv_grants
   for update to authenticated using (owner_id=(select auth.uid()))
-  with check (owner_id=(select auth.uid()));
+  with check (owner_id=(select auth.uid()) and expires_at<=now()+interval '90 days');
 create policy "dt_cv_grants_delete_self" on public.dt_cv_grants
   for delete to authenticated using (owner_id=(select auth.uid()));
 
