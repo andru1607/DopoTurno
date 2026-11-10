@@ -18,17 +18,17 @@ function forum(){
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 test('HTML does not contain inline executable code',()=>{
-  assert.equal((page.match(/<script\b/gi)||[]).length,18);
-  assert.equal((page.match(/<script\b[^>]*\bsrc=/gi)||[]).length,18);
+  assert.equal((page.match(/<script\b/gi)||[]).length,19);
+  assert.equal((page.match(/<script\b[^>]*\bsrc=/gi)||[]).length,19);
   assert.doesNotMatch(page,/<style[\s>]/i);
   assert.doesNotMatch(page,/\son[a-z]+\s*=/i);
-  for(const name of ['academy-app.js','academy-sala-data.js','academy-extra-data.js','academy-assets.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js'])assert.ok(page.includes(name),name);
+  for(const name of ['academy-app.js','academy-sala-data.js','academy-extra-data.js','academy-assets.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js','online-client.js'])assert.ok(page.includes(name),name);
 });
 
 test('strict script CSP and isolation headers',()=>{
   assert.match(policy,/script-src 'self';/);
   assert.doesNotMatch(policy,/script-src 'self' 'unsafe-inline'/);
-  for(const piece of ["script-src-attr 'none'","connect-src 'none'","frame-ancestors 'none'","base-uri 'none'","object-src 'none'"])assert.ok(policy.includes(piece));
+  for(const piece of ["script-src-attr 'none'","connect-src 'self'","frame-ancestors 'none'","base-uri 'none'","object-src 'none'"])assert.ok(policy.includes(piece));
   const headers=Object.fromEntries(config.headers[0].headers.map(h=>[h.key,h.value]));
   assert.equal(headers['X-Frame-Options'],'DENY');
   assert.equal(headers['Referrer-Policy'],'no-referrer');
@@ -36,7 +36,7 @@ test('strict script CSP and isolation headers',()=>{
 });
 
 test('all application scripts can be parsed',()=>{
-  for(const name of ['academy-assets.js','academy-sala-data.js','academy-extra-data.js','academy-app.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js'])assert.doesNotThrow(()=>new vm.Script(read(name),{filename:name}));
+  for(const name of ['academy-assets.js','academy-sala-data.js','academy-extra-data.js','academy-app.js','confronti-forum.js','intermediate-course-builder.js','intermediate-sala.js','intermediate-cucina.js','intermediate-bar.js','learning-path.js','microlearning.js','turn-tips.js','shift-sim-sala.js','shift-sim-cucina.js','shift-sim-bar.js','shift-sim-engine.js','assessment-ledger.js','exam-recovery.js','online-client.js'])assert.doesNotThrow(()=>new vm.Script(read(name),{filename:name}));
 });
 
 test('forum recognizes common accidental identifiers',()=>{
